@@ -8,5 +8,5 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nome = Column(String)
-    email = Column(String)
-    cpf = Column(String)
+    email = Column(String, unique=True)
+    cpf = Column(String, unique=True)

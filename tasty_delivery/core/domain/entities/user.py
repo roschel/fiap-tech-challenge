@@ -1,5 +1,8 @@
-class User:
-    def __init__(self, nome, email, cpf):
-        self.nome = nome
-        self.email = email
-        self.cpf = cpf
+from pydantic import BaseModel, Field
+
+
+class User(BaseModel):
+    id: int = Field(None)
+    nome: str = Field()
+    email: str = Field()
+    cpf: str = Field(max_length=11)

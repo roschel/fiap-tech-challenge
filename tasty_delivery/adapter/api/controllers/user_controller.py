@@ -2,8 +2,9 @@ from typing import List
 
 from fastapi import APIRouter
 
-from tasty_delivery.adapter.api.models.user import User as UserSchema
+from tasty_delivery.core.domain.entities.user import User as User
 from tasty_delivery.core.application.use_cases.user_case import UserCase
+from tasty_delivery.core.domain.exceptions.user_exception import UserNotFound
 
 
 class UserController:
@@ -14,14 +15,18 @@ class UserController:
             path="/",
             endpoint=self.users,
             methods=["GET"],
-            response_model=List[UserSchema],
+            response_model=List[User],
             status_code=200
         )
         self.router.add_api_route(
             path="/",
             endpoint=self.create,
             methods=["POST"],
-            response_model=UserSchema,
+            response_model=User,
+            responses={
+                201: {"model": User},
+                409: {"model": UserNotFound}
+            },
             status_code=201
         )
 
@@ -30,5 +35,5 @@ class UserController:
     async def users(self):
         return self._user_case.get_users()
 
-    async def create(self, user: UserSchema):
+    async def create(self, user: User):
         return self._user_case.create(user)
