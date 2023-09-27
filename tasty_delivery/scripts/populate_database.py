@@ -42,6 +42,6 @@ def populate():
     for user in mock_user:
         result = UserCase(next(get_db())).get_all()
 
-        if len(result) == 3:
+        if len(result) == 4:
             break
         UserCase(next(get_db())).create(user)

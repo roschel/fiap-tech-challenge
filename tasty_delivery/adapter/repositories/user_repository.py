@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 
 from tasty_delivery.adapter.database.models.user import User as UserDb
@@ -31,3 +32,6 @@ class UserRepository(IUserRepository):
         except IntegrityError:
             raise DuplicateObject("Usuário já existente na base de dados", 409)
         return obj
+
+    def update(self, id, new_values):
+        update(UserDb).where(UserDb.id == id).values(new_values)

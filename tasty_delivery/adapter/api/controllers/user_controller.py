@@ -42,14 +42,29 @@ class UserController:
             },
             status_code=201
         )
+        self.router.add_api_route(
+            path="/{id}",
+            endpoint=self.update,
+            methods=["PUT"],
+            response_model=User,
+            responses={
+                200: {"model": User},
+                404: {"model": ObjectNotFound},
+                409: {"model": ObjectDuplicated}
+            },
+            status_code=200
+        )
 
         self._user_case = user_case
 
     async def users(self, db=Depends(get_db)):
-        return self._user_case(db).get_users()
+        return self._user_case(db).get_all()
 
     async def user_by_id(self, id: int, db=Depends(get_db)):
-        return self._user_case(db).get_user_by_id(id)
+        return self._user_case(db).get_by_id(id)
 
     async def create(self, user: User, db=Depends(get_db)):
         return self._user_case(db).create(user)
+
+    async def update(self, id: int, user: User, db=Depends(get_db)):
+        return self._user_case(db).update(id, user)

@@ -17,3 +17,6 @@ class UserCase(IUserCase):
 
     def create(self, user: User) -> User:
         return self.repository.create(UserDB(**vars(user)))
+
+    def update(self, id, new_values):
+        return self.repository.update(id, new_values.model_dump(exclude_none=True))

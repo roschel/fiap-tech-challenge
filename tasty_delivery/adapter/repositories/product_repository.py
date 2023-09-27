@@ -1,5 +1,6 @@
 from typing import List
 
+from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 
 from tasty_delivery.adapter.database.models.product import Product as ProductDb
@@ -34,3 +35,9 @@ class ProductRepository(IProductRepository):
         except IntegrityError:
             raise DuplicateObject("Produto já existente na base de dados", 409)
         return obj
+
+    def update(self, id, new_values):
+        self.db.query(ProductDb).filter(ProductDb.id == id).update(new_values)
+        self.db.flush()
+        self.db.commit()
+        return self.get_by_id(id)

@@ -14,3 +14,7 @@ class IBaseUseCase(ABC):
     @abstractmethod
     def get_by_id(self, id):
         raise NotImplementedError
+
+    @abstractmethod
+    def update(self, id, new_values):
+        raise NotImplementedError

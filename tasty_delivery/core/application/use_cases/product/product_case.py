@@ -5,7 +5,6 @@ from tasty_delivery.core.domain.entities.product import Product
 
 
 class ProductCase(IProductCase):
-
     def __init__(self, db=None):
         self.repository = ProductRepository(db)
 
@@ -20,3 +19,6 @@ class ProductCase(IProductCase):
 
     def create(self, obj: Product) -> Product:
         return self.repository.create(ProductDB(**vars(obj)))
+
+    def update(self, id, new_values):
+        return self.repository.update(id, new_values.model_dump(exclude_none=True))
