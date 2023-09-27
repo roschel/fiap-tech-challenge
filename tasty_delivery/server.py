@@ -1,26 +1,29 @@
 from fastapi import FastAPI
 
+from tasty_delivery.adapter.api.controllers.category_controller import CategoryController
+from tasty_delivery.adapter.api.controllers.product_controller import ProductController
 from tasty_delivery.adapter.api.controllers.user_controller import UserController
-from tasty_delivery.adapter.database.db import get_db
-from tasty_delivery.core.application.use_cases.user_case import UserCase
-from tasty_delivery.core.domain.entities.user import User
+from tasty_delivery.core.application.use_cases.category.category_case import CategoryCase
+from tasty_delivery.core.application.use_cases.product.product_case import ProductCase
+from tasty_delivery.core.application.use_cases.user.user_case import UserCase
+from tasty_delivery.scripts.populate_database import populate
 
 app = FastAPI()
 
 # Users
-route_controller = UserController(UserCase)
-app.include_router(route_controller.router)
+user_controller = UserController(UserCase)
+
+# Categories
+category_controller = CategoryController(CategoryCase)
+
+# Products
+products_controller = ProductController(ProductCase)
+
+app.include_router(user_controller.router)
+app.include_router(category_controller.router)
+app.include_router(products_controller.router)
 
 
 @app.on_event("startup")
 async def populate_database():
-    mock_user = [
-        User(nome="João", cpf="11122233344", email="joao@email.com"),
-        User(nome="Victor", cpf="2223334455", email="victor@email.com"),
-        User(nome="Tais", cpf="33344455566", email="tais@email.com"),
-        User(nome="Augusto", cpf="44455566677", email="augusto@email.com"),
-    ]
-
-    for user in mock_user:
-        db = get_db()
-        UserCase(next(db)).create(user)
+    populate()

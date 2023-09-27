@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, DateTime, String
+from sqlalchemy import Column, Integer, String
 
 from tasty_delivery.adapter.database.db import Base
 

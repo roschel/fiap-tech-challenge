@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 
-USER_NOT_FOUND_MESSAGE = "Usuário não encontrado"
-USER_DUPLICATED_MESSAGE = "Usuário duplicado na base de dados"
+OBJECT_NOT_FOUND_MESSAGE = "Objeto não encontrado"
+OBJECT_DUPLICATED_MESSAGE = "Objeto duplicado na base de dados"
 
 
 class DefaultResponse(BaseModel):
@@ -16,19 +16,19 @@ class DefaultResponse(BaseModel):
     )
 
 
-class UserNotFound(DefaultResponse):
+class ObjectNotFound(DefaultResponse):
     detail: str = Field(
-        default=USER_NOT_FOUND_MESSAGE,
+        default=OBJECT_NOT_FOUND_MESSAGE,
         title="Mensagem",
-        description=USER_NOT_FOUND_MESSAGE,
-        example=USER_NOT_FOUND_MESSAGE
+        description=OBJECT_NOT_FOUND_MESSAGE,
+        example=OBJECT_NOT_FOUND_MESSAGE
     )
 
 
-class UserDuplicated(DefaultResponse):
+class ObjectDuplicated(DefaultResponse):
     detail: str = Field(
-        default=USER_DUPLICATED_MESSAGE,
+        default=OBJECT_DUPLICATED_MESSAGE,
         title="Mensagem",
-        description=USER_DUPLICATED_MESSAGE,
-        example=USER_DUPLICATED_MESSAGE
+        description=OBJECT_DUPLICATED_MESSAGE,
+        example=OBJECT_DUPLICATED_MESSAGE
     )
