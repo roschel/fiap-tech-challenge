@@ -8,6 +8,6 @@ camada de atendimento presencial.
 
 - Dentro pasta tasty_delivery, run:
   
-**`uvicorn server:app`**
+**`uvicorn tasty_delivery.server:app`**
 
 

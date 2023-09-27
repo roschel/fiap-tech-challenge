@@ -1,14 +1,19 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import List
 
-from tasty_delivery.core.application.use_cases.base_use_case import BaseUseCase
 from tasty_delivery.core.domain.entities.user import User
 
 
-class IUserCase(ABC, BaseUseCase):
+class IUserCase(ABC):
 
+    @abstractmethod
     def get_users(self) -> List[User]:
         raise NotImplementedError
 
+    @abstractmethod
     def create(self, user: User) -> User:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_user_by_id(self, id):
         raise NotImplementedError

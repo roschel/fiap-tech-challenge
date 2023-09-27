@@ -11,5 +11,9 @@ class IUserRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def get_user_by_id(self, id) -> User:
+        raise NotImplementedError
+
+    @abstractmethod
     def create(self, user: User) -> User:
         raise NotImplementedError
