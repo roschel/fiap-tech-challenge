@@ -20,5 +20,5 @@ class ProductCase(IProductCase):
     def create(self, obj: Product) -> Product:
         return self.repository.create(ProductDB(**vars(obj)))
 
-    def update(self, id, new_values):
+    def update(self, id, new_values: Product) -> Product:
         return self.repository.update(id, new_values.model_dump(exclude_none=True))

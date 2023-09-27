@@ -18,5 +18,5 @@ class CategoryCase(ICategoryCase):
     def create(self, obj: Category) -> Category:
         return self.repository.create(CategoryDB(**vars(obj)))
 
-    def update(self, id, new_values):
+    def update(self, id, new_values: Category) -> Category:
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
