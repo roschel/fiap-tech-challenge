@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from tasty_delivery.core.domain.entities.base_entity import Base
 
 
-class Category(BaseModel):
-    id: int = Field(None)
+class Category(Base):
     nome: str = Field(title="Descrição da categoria")

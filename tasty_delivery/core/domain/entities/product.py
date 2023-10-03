@@ -1,7 +1,8 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from tasty_delivery.core.domain.entities.base_entity import Base
 
 
-class Product(BaseModel):
-    id: int = Field(None)
+class Product(Base):
     nome: str = Field()
     category_id: int = Field()

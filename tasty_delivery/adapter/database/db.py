@@ -23,6 +23,5 @@ def get_db():
         yield db
     except:
         db.rollback()
-        db.close()
     finally:
         db.close()

@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, String, BOOLEAN, TIMESTAMP
 
 from tasty_delivery.adapter.database.db import Base
 
@@ -10,3 +12,7 @@ class User(Base):
     nome = Column(String)
     email = Column(String, unique=True)
     cpf = Column(String, unique=True)
+    is_active = Column(BOOLEAN)
+    is_deleted = Column(BOOLEAN)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow())
+    updated_at = Column(TIMESTAMP, onupdate=datetime.utcnow())
