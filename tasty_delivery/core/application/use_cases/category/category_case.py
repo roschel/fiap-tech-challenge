@@ -3,6 +3,7 @@ from tasty_delivery.adapter.repositories.category_repository import CategoryRepo
 from tasty_delivery.core.application.use_cases.category.icategory_case import ICategoryCase
 from tasty_delivery.core.domain.entities.category import Category
 
+from uuid import uuid4
 
 class CategoryCase(ICategoryCase):
 
@@ -16,6 +17,7 @@ class CategoryCase(ICategoryCase):
         return self.repository.get_by_id(id)
 
     def create(self, obj: Category) -> Category:
+        obj.id = uuid4()
         return self.repository.create(CategoryDB(**vars(obj)))
 
     def update(self, id, new_values: Category) -> Category:

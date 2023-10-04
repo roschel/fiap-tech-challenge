@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from tasty_delivery.adapter.database.models.product import Product as ProductDB
 from tasty_delivery.adapter.repositories.product_repository import ProductRepository
 from tasty_delivery.core.application.use_cases.product.iproduct_case import IProductCase
@@ -18,6 +20,7 @@ class ProductCase(IProductCase):
         return self.repository.get_by_category(category_id)
 
     def create(self, obj: Product) -> Product:
+        obj.id = uuid4()
         return self.repository.create(ProductDB(**vars(obj)))
 
     def update(self, id, new_values: Product) -> Product:

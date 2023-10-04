@@ -21,16 +21,16 @@ def populate():
             break
 
         result = CategoryCase(next(get_db())).create(category)
-        if result.id == 1:
-            ProductCase(next(get_db())).create(Product(nome="BigMc", category_id=result.id))
-            ProductCase(next(get_db())).create(Product(nome="Whooper", category_id=result.id))
-            ProductCase(next(get_db())).create(Product(nome="Cheedar", category_id=result.id))
-        elif result.id == 2:
-            ProductCase(next(get_db())).create(Product(nome="Casquinha", category_id=result.id))
+        if result.nome == "Lanches":
+            ProductCase(next(get_db())).create(Product(nome="BigMc", category_id=str(result.id)))
+            ProductCase(next(get_db())).create(Product(nome="Whooper", category_id=str(result.id)))
+            ProductCase(next(get_db())).create(Product(nome="Cheedar", category_id=str(result.id)))
+        elif result.nome == "Sobremesa":
+            ProductCase(next(get_db())).create(Product(nome="Casquinha", category_id=str(result.id)))
         else:
-            ProductCase(next(get_db())).create(Product(nome="Coca Cola", category_id=result.id))
-            ProductCase(next(get_db())).create(Product(nome="Guaraná", category_id=result.id))
-            ProductCase(next(get_db())).create(Product(nome="Fanta Laranja", category_id=result.id))
+            ProductCase(next(get_db())).create(Product(nome="Coca Cola", category_id=str(result.id)))
+            ProductCase(next(get_db())).create(Product(nome="Guaraná", category_id=str(result.id)))
+            ProductCase(next(get_db())).create(Product(nome="Fanta Laranja", category_id=str(result.id)))
 
     mock_user = [
         User(nome="João", cpf="11122233344", email="joao@email.com"),
