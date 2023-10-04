@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
@@ -61,6 +62,18 @@ class ProductController:
             },
             status_code=200
         )
+        self.router.add_api_route(
+            path="/{id}",
+            endpoint=self.delete,
+            methods=["DELETE"],
+            response_model=Product,
+            responses={
+                200: {"model": Product},
+                404: {"model": ObjectNotFound},
+                409: {"model": ObjectDuplicated}
+            },
+            status_code=200
+        )
 
         self._product_case = product_case
 
@@ -78,3 +91,6 @@ class ProductController:
 
     async def update(self, id: int, product: Product, db=Depends(get_db)):
         return self._product_case(db).update(id, product)
+
+    async def delete(self, id: UUID, db=Depends(get_db)):
+        return self._product_case(db).delete(id)

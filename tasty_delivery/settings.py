@@ -9,7 +9,8 @@ class Settings(BaseSettings):
 
     DB_USERNAME: str = Field("postgres")
     DB_PASSWORD: str = Field("password")
-    DB_HOST: str = Field("postgres_db")
+    # DB_HOST: str = Field("postgres_db")
+    DB_HOST: str = Field("localhost")
     DB_DATABASE: str = Field("tasty_delivery")
 
 

@@ -24,4 +24,8 @@ class ProductCase(IProductCase):
         return self.repository.create(ProductDB(**vars(obj)))
 
     def update(self, id, new_values: Product) -> Product:
+        new_values.id = None
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
+
+    def delete(self, id):
+        return self.repository.delete(id)

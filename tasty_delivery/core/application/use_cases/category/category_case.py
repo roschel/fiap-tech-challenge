@@ -21,4 +21,9 @@ class CategoryCase(ICategoryCase):
         return self.repository.create(CategoryDB(**vars(obj)))
 
     def update(self, id, new_values: Category) -> Category:
+        new_values.id = None
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
+
+    def delete(self, id):
+        return self.repository.delete(id)
+

@@ -41,3 +41,9 @@ class ProductRepository(IProductRepository):
         self.db.flush()
         self.db.commit()
         return self.get_by_id(id)
+
+    def delete(self, id):
+        self.db.query(ProductDb).filter(ProductDb.id == id).update({'is_deleted': True})
+        self.db.flush()
+        self.db.commit()
+        return None

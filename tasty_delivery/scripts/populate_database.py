@@ -17,7 +17,7 @@ def populate():
     for category in categories_mock:
         result = CategoryCase(next(get_db())).get_all()
 
-        if len(result) == 3:
+        if result:
             break
 
         result = CategoryCase(next(get_db())).create(category)
@@ -42,6 +42,6 @@ def populate():
     for user in mock_user:
         result = UserCase(next(get_db())).get_all()
 
-        if len(result) == 4:
+        if result:
             break
         UserCase(next(get_db())).create(user)

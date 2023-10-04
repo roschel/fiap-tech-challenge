@@ -1,4 +1,5 @@
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
@@ -54,6 +55,18 @@ class CategoryController:
             },
             status_code=200
         )
+        self.router.add_api_route(
+            path="/{id}",
+            endpoint=self.delete,
+            methods=["DELETE"],
+            response_model=Category,
+            responses={
+                200: {"model": Category},
+                404: {"model": ObjectNotFound},
+                409: {"model": ObjectDuplicated}
+            },
+            status_code=200
+        )
 
         self._category_case = category_case
 
@@ -68,3 +81,6 @@ class CategoryController:
 
     async def update(self, id: int, category: Category, db=Depends(get_db)):
         return self._category_case(db).update(id, category)
+
+    async def delete(self, id: UUID, db=Depends(get_db)):
+        return self._category_case(db).delete(id)

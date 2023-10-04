@@ -14,7 +14,7 @@ class CategoryRepository(ICategoryRepository):
         self.db = db
 
     def get_all(self) -> List[CategoryDb]:
-        result = self.db.query(CategoryDb).all()
+        result = self.db.query(CategoryDb).filter(CategoryDb.is_deleted == False).all()
         return result
 
     def get_by_id(self, id) -> CategoryDb:
@@ -34,4 +34,14 @@ class CategoryRepository(ICategoryRepository):
         return obj
 
     def update(self, id, new_values):
-        update(CategoryDb).where(CategoryDb.id == id).values(new_values)
+        self.db.query(CategoryDb).filter(CategoryDb.id == id).update(new_values)
+        self.db.flush()
+        self.db.commit()
+        return self.get_by_id(id)
+
+    def delete(self, id):
+        self.db.query(CategoryDb).filter(CategoryDb.id == id).update({'is_deleted': True})
+        self.db.flush()
+        self.db.commit()
+        return None
+

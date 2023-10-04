@@ -14,7 +14,7 @@ class UserRepository(IUserRepository):
         self.db = db
 
     def get_all(self) -> List[UserDb]:
-        result = self.db.query(UserDb).all()
+        result = self.db.query(UserDb).filter(UserDb.is_deleted == False, UserDb.is_active == True).all()
         return result
 
     def get_by_id(self, id) -> UserDb:
@@ -34,4 +34,13 @@ class UserRepository(IUserRepository):
         return obj
 
     def update(self, id, new_values):
-        update(UserDb).where(UserDb.id == id).values(new_values)
+        self.db.query(UserDb).filter(UserDb.id == id).update(new_values)
+        self.db.flush()
+        self.db.commit()
+        return self.get_by_id(id)
+
+    def delete(self, id):
+        self.db.query(UserDb).filter(UserDb.id == id).update({'is_deleted': True})
+        self.db.flush()
+        self.db.commit()
+        return None

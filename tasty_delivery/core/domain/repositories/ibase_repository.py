@@ -18,3 +18,7 @@ class IBaseRepository(ABC):
     @abstractmethod
     def update(self, id, new_values):
         raise NotImplementedError
+
+    @abstractmethod
+    def delete(self, id):
+        raise NotImplementedError
