@@ -73,13 +73,13 @@ class CategoryController:
     async def categories(self, db=Depends(get_db)):
         return self._category_case(db).get_all()
 
-    async def category_by_id(self, id: int, db=Depends(get_db)):
+    async def category_by_id(self, id: UUID, db=Depends(get_db)):
         return self._category_case(db).get_by_id(id)
 
     async def create(self, category: Category, db=Depends(get_db)):
         return self._category_case(db).create(category)
 
-    async def update(self, id: int, category: Category, db=Depends(get_db)):
+    async def update(self, id: UUID, category: Category, db=Depends(get_db)):
         return self._category_case(db).update(id, category)
 
     async def delete(self, id: UUID, db=Depends(get_db)):

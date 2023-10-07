@@ -8,7 +8,7 @@ from tasty_delivery.core.application.use_cases.product.product_case import Produ
 from tasty_delivery.core.application.use_cases.user.user_case import UserCase
 from tasty_delivery.scripts.populate_database import populate
 
-app = FastAPI()
+app = FastAPI(title="Tasty Delivery")
 
 # Users
 user_controller = UserController(UserCase)

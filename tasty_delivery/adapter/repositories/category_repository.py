@@ -1,10 +1,8 @@
 from typing import List
 
-from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 
 from tasty_delivery.adapter.database.models.category import Category as CategoryDb
-from tasty_delivery.core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from tasty_delivery.core.domain.repositories.icategory_repository import ICategoryRepository
 
 
@@ -18,10 +16,7 @@ class CategoryRepository(ICategoryRepository):
         return result
 
     def get_by_id(self, id) -> CategoryDb:
-        result = self.db.query(CategoryDb).filter(CategoryDb.id == id).scalar()
-        if not result:
-            raise ObjectNotFound(f"Categoria {id} não encontrado", 404)
-        return result
+        return self.db.query(CategoryDb).filter(CategoryDb.id == id).scalar()
 
     def create(self, obj: CategoryDb) -> CategoryDb:
         try:
@@ -29,8 +24,8 @@ class CategoryRepository(ICategoryRepository):
             self.db.flush()
             self.db.refresh(obj)
             self.db.commit()
-        except IntegrityError:
-            raise DuplicateObject("Categoria já existente na base de dados", 409)
+        except IntegrityError as err:
+            raise err
         return obj
 
     def update(self, id, new_values):
@@ -44,4 +39,3 @@ class CategoryRepository(ICategoryRepository):
         self.db.flush()
         self.db.commit()
         return None
-

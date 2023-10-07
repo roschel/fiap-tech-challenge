@@ -1,5 +1,9 @@
 from uuid import uuid4
 
+from sqlalchemy.exc import IntegrityError
+
+from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
+from logger import logger
 from tasty_delivery.adapter.database.models.product import Product as ProductDB
 from tasty_delivery.adapter.repositories.product_repository import ProductRepository
 from tasty_delivery.core.application.use_cases.product.iproduct_case import IProductCase
@@ -14,14 +18,24 @@ class ProductCase(IProductCase):
         return self.repository.get_all()
 
     def get_by_id(self, id):
-        return self.repository.get_by_id(id)
+        result = self.repository.get_by_id(id)
+        if not result:
+            msg = f"Produto {id} não encontrado"
+            logger.warning(msg)
+            raise ObjectNotFound(msg, 404)
+        return result
 
     def get_by_category(self, category_id):
         return self.repository.get_by_category(category_id)
 
     def create(self, obj: Product) -> Product:
-        obj.id = uuid4()
-        return self.repository.create(ProductDB(**vars(obj)))
+        try:
+            obj.id = uuid4()
+            return self.repository.create(ProductDB(**vars(obj)))
+        except IntegrityError:
+            msg = "Produto já existente na base de dados"
+            logger.warning(msg)
+            raise DuplicateObject(msg, 409)
 
     def update(self, id, new_values: Product) -> Product:
         new_values.id = None

@@ -1,10 +1,8 @@
 from typing import List
 
-from sqlalchemy import update
 from sqlalchemy.exc import IntegrityError
 
 from tasty_delivery.adapter.database.models.user import User as UserDb
-from tasty_delivery.core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from tasty_delivery.core.domain.repositories.iuser_repository import IUserRepository
 
 
@@ -18,10 +16,7 @@ class UserRepository(IUserRepository):
         return result
 
     def get_by_id(self, id) -> UserDb:
-        result = self.db.query(UserDb).filter(UserDb.id == id).scalar()
-        if not result:
-            raise ObjectNotFound(f"Usuário {id} não encontrado", 404)
-        return result
+        return self.db.query(UserDb).filter(UserDb.id == id).scalar()
 
     def create(self, obj: UserDb) -> UserDb:
         try:
@@ -29,8 +24,8 @@ class UserRepository(IUserRepository):
             self.db.flush()
             self.db.refresh(obj)
             self.db.commit()
-        except IntegrityError:
-            raise DuplicateObject("Usuário já existente na base de dados", 409)
+        except IntegrityError as err:
+            raise err
         return obj
 
     def update(self, id, new_values):
@@ -44,3 +39,6 @@ class UserRepository(IUserRepository):
         self.db.flush()
         self.db.commit()
         return None
+
+    def get_user_by_username(self, username: str):
+        return self.db.query(UserDb).filter(UserDb.username == username).scalar()

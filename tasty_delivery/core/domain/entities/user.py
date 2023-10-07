@@ -7,6 +7,11 @@ class User(Base):
     nome: str = Field()
     email: str = Field()
     cpf: str = Field(max_length=11)
+    username: str = Field()
+
+
+class UserInDB(User):
+    hashed_password: str = Field()
 
 
 class UserUpdate(Base):

@@ -1,11 +1,13 @@
-from typing import List
+from typing import List, Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
 
+from security import Token
 from tasty_delivery.adapter.database.db import get_db
 from tasty_delivery.core.application.use_cases.user.user_case import UserCase
-from tasty_delivery.core.domain.entities.user import User as User, UserUpdate
+from tasty_delivery.core.domain.entities.user import User as User, UserUpdate, UserInDB
 from tasty_delivery.core.domain.exceptions.exception_schema import ObjectNotFound, ObjectDuplicated
 
 
@@ -44,6 +46,13 @@ class UserController:
             status_code=201
         )
         self.router.add_api_route(
+            path="/login",
+            endpoint=self.login,
+            methods=["POST"],
+            response_model=Token,
+            status_code=200
+        )
+        self.router.add_api_route(
             path="/{id}",
             endpoint=self.update,
             methods=["PUT"],
@@ -69,6 +78,9 @@ class UserController:
         )
 
         self._user_case = user_case
+
+    async def login(self, form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db=Depends(get_db)):
+        return self._user_case(db).authenticate_user(form_data)
 
     async def users(self, db=Depends(get_db)):
         return self._user_case(db).get_all()

@@ -1,9 +1,14 @@
+from uuid import uuid4
+
+from sqlalchemy.exc import IntegrityError
+
+from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
+from logger import logger
 from tasty_delivery.adapter.database.models.category import Category as CategoryDB
 from tasty_delivery.adapter.repositories.category_repository import CategoryRepository
 from tasty_delivery.core.application.use_cases.category.icategory_case import ICategoryCase
 from tasty_delivery.core.domain.entities.category import Category
 
-from uuid import uuid4
 
 class CategoryCase(ICategoryCase):
 
@@ -14,11 +19,21 @@ class CategoryCase(ICategoryCase):
         return self.repository.get_all()
 
     def get_by_id(self, id):
-        return self.repository.get_by_id(id)
+        result = self.repository.get_by_id(id)
+        if not result:
+            msg = f"Categoria {id} não encontrado"
+            logger.warning(msg)
+            raise ObjectNotFound(msg, 404)
+        return result
 
     def create(self, obj: Category) -> Category:
         obj.id = uuid4()
-        return self.repository.create(CategoryDB(**vars(obj)))
+        try:
+            return self.repository.create(CategoryDB(**vars(obj)))
+        except IntegrityError:
+            msg = "Categoria já existente na base de dados"
+            logger.warning(msg)
+            raise DuplicateObject(msg, 409)
 
     def update(self, id, new_values: Category) -> Category:
         new_values.id = None
@@ -26,4 +41,3 @@ class CategoryCase(ICategoryCase):
 
     def delete(self, id):
         return self.repository.delete(id)
-

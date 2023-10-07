@@ -80,16 +80,16 @@ class ProductController:
     async def products(self, db=Depends(get_db)):
         return self._product_case(db).get_all()
 
-    async def product_by_id(self, id: int, db=Depends(get_db)):
+    async def product_by_id(self, id: UUID, db=Depends(get_db)):
         return self._product_case(db).get_by_id(id)
 
-    async def products_by_category(self, category_id: int, db=Depends(get_db)):
+    async def products_by_category(self, category_id: UUID, db=Depends(get_db)):
         return self._product_case(db).get_by_category(category_id)
 
     async def create(self, product: Product, db=Depends(get_db)):
         return self._product_case(db).create(product)
 
-    async def update(self, id: int, product: Product, db=Depends(get_db)):
+    async def update(self, id: UUID, product: Product, db=Depends(get_db)):
         return self._product_case(db).update(id, product)
 
     async def delete(self, id: UUID, db=Depends(get_db)):
