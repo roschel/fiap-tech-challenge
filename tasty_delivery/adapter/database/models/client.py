@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, String, BOOLEAN, TIMESTAMP, UUID
+from sqlalchemy import Column, String, BOOLEAN, TIMESTAMP, UUID, ARRAY
 
 from adapter.database.db import Base
 
@@ -16,3 +16,4 @@ class Client(Base):
     is_deleted = Column(BOOLEAN)
     created_at = Column(TIMESTAMP, default=datetime.utcnow())
     updated_at = Column(TIMESTAMP, onupdate=datetime.utcnow())
+    scopes = Column(ARRAY(String), nullable=True)

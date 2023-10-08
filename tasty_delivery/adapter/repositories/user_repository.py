@@ -40,5 +40,8 @@ class UserRepository(IUserRepository):
         self.db.commit()
         return None
 
-    def get_user_by_username(self, username: str):
+    def get_by_username(self, username: str):
         return self.db.query(UserDb).filter(UserDb.username == username).scalar()
+
+    def get_by_cpf(self, cpf):
+        return self.db.query(UserDb).filter(UserDb.cpf == cpf).scalar()

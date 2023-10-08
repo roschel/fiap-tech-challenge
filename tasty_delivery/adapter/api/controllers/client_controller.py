@@ -7,6 +7,7 @@ from adapter.database.db import get_db
 from core.application.use_cases.client.client_case import ClientCase
 from core.domain.entities.client import Client
 from core.domain.exceptions.exception_schema import ObjectNotFound, ObjectDuplicated
+from security import get_current_user
 
 
 class ClientController:
@@ -79,17 +80,17 @@ class ClientController:
 
         self._client_case = client_case
 
-    async def clients(self, db=Depends(get_db)):
+    async def clients(self, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).get_all()
 
-    async def client_by_id(self, id: UUID, db=Depends(get_db)):
+    async def client_by_id(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).get_by_id(id)
 
-    async def create(self, client: Client, db=Depends(get_db)):
+    async def create(self, client: Client, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).create(client)
 
-    async def update(self, id: UUID, client: Client, db=Depends(get_db)):
+    async def update(self, id: UUID, client: Client, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).update(id, client)
 
-    async def delete(self, id: UUID, db=Depends(get_db)):
+    async def delete(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
         self._client_case(db).delete(id)

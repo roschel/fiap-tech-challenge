@@ -6,9 +6,10 @@ from adapter.database.models.product import Product as ProductDB
 from adapter.repositories.product_repository import ProductRepository
 from adapter.database.models.user import User as UserDB
 from core.application.use_cases.product.iproduct_case import IProductCase
-from core.domain.entities.product import Product
+from core.domain.entities.product import ProductIN, ProductOUT
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
+from security import has_permission
 
 
 class ProductCase(IProductCase):
@@ -30,7 +31,8 @@ class ProductCase(IProductCase):
     def get_by_category(self, category_id):
         return self.repository.get_by_category(category_id)
 
-    def create(self, obj: Product) -> Product:
+    @has_permission(permission='admin')
+    def create(self, obj: ProductIN) -> ProductOUT:
         try:
             obj.id = uuid4()
             obj.created_by = self.current_user.id
@@ -40,10 +42,12 @@ class ProductCase(IProductCase):
             logger.warning(msg)
             raise DuplicateObject(msg, 409)
 
-    def update(self, id, new_values: Product) -> Product:
+    @has_permission(permission='admin')
+    def update(self, id, new_values: ProductIN) -> ProductOUT:
         new_values.id = None
         new_values.updated_by = self.current_user.id
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
 
+    @has_permission(permission='admin')
     def delete(self, id):
         return self.repository.delete(id, self.current_user)

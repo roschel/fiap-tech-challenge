@@ -20,12 +20,12 @@ def populate():
         session.execute(
             text(
                 f'''
-                INSERT INTO users (id, username, nome, email, cpf, hashed_password, is_active, is_deleted, created_at, updated_at)
+                INSERT INTO users (id, username, nome, email, cpf, hashed_password, is_active, is_deleted, created_at, updated_at, scopes)
                 VALUES 
-                    ('{user_1_id}', 'joao', 'João', 'joao@email.com', '11122233344', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null),
-                    ('{user_2_id}', 'victor', 'Victor', 'victor@email.com', '22233344455', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null),
-                    ('{user_3_id}', 'tais', 'Tais', 'tais@email.com', '33344455566', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null),
-                    ('{user_4_id}', 'augusto', 'Augusto', 'augusto@email.com', '44455566677', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null)
+                    ('{user_1_id}', 'joao@email.com', 'João', 'joao@email.com', '11122233344', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null, '{{admin}}'),
+                    ('{user_2_id}', 'victor@email.com', 'Victor', 'victor@email.com', '22233344455', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null, '{{admin}}'),
+                    ('{user_3_id}', 'tais@email.com', 'Tais', 'tais@email.com', '33344455566', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null, '{{admin}}'),
+                    ('{user_4_id}', 'augusto@email.com', 'Augusto', 'augusto@email.com', '44455566677', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null, '{{admin}}')
                 '''
             )
         )
@@ -59,15 +59,15 @@ def populate():
         session.execute(
             text(
                 f'''
-                        INSERT INTO products (id, nome, is_active, is_deleted, created_at, updated_at, category_id, created_by, updated_by)
+                        INSERT INTO products (id, nome, descricao, preco, is_active, is_deleted, created_at, updated_at, category_id, created_by, updated_by)
                         VALUES 
-                            ('{product_1_id}', 'Whopper', true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_1_id}', null),
-                            ('{product_2_id}', 'BigMc', true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_2_id}', null),
-                            ('{product_3_id}', 'Cheddar', true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_3_id}', null),
-                            ('{product_4_id}', 'Coca-Cola', true, false, '{datetime.utcnow()}', null, '{category_3_id}', '{user_4_id}', null),
-                            ('{product_5_id}', 'Guaraná', true, false, '{datetime.utcnow()}', null, '{category_3_id}', '{user_1_id}', null),
-                            ('{product_6_id}', 'Casquinha', true, false, '{datetime.utcnow()}', null, '{category_2_id}', '{user_2_id}', null),
-                            ('{product_7_id}', 'Torta de maçã', true, false, '{datetime.utcnow()}', null, '{category_2_id}', '{user_3_id}', null)
+                            ('{product_1_id}', 'Whopper', 'Pão com gergelim, maionese, alface, tomate, cebola, ketchup, picles, queijo derretido e um suculento hambúrguer de pura carne bovina. Todos esses ingredientes são cuidadosamente armazenados e preparados, para você se deliciar com um sanduíche fresquinho e de alta qualidade' , 21.90,true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_1_id}', null),
+                            ('{product_2_id}', 'Big Mac', 'Dois hambúrgueres (100% carne bovina), alface americana, queijo sabor cheddar, molho especial, cebola, picles e pão com gergelim.', 19.90,true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_2_id}', null),
+                            ('{product_3_id}', 'Cheddar', 'Um hambúrguer (100% carne bovina), molho lácteo cremoso sabor cheddar, cebola ao molho shoyu e pão escuro com gergelim.', 17.90,true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_3_id}', null),
+                            ('{product_4_id}', 'Coca-Cola', 'Refrescante e geladinha. Uma bebida assim refresca a vida. Você pode escolher entre Coca-Cola, Coca-Cola Zero, Sprite sem Açúcar, Fanta Guaraná e Fanta Laranja.', 7.90,true, false, '{datetime.utcnow()}', null, '{category_3_id}', '{user_4_id}', null),
+                            ('{product_5_id}', 'Guaraná', 'Refrescante e geladinha. Uma bebida assim refresca a vida. Você pode escolher entre Coca-Cola, Coca-Cola Zero, Sprite sem Açúcar, Fanta Guaraná e Fanta Laranja', 7.90,true, false, '{datetime.utcnow()}', null, '{category_3_id}', '{user_1_id}', null),
+                            ('{product_6_id}', 'Casquinha', 'A sobremesa que o Brasil todo adora. Uma casquinha supercrocante, com bebida láctea mista (sabor baunilha e chocolate) que vai bem a qualquer hora.', 5.50, true, false, '{datetime.utcnow()}', null, '{category_2_id}', '{user_2_id}', null),
+                            ('{product_7_id}', 'Torta de maçã', 'Boa demais. Parece a receita lá de casa. Massa quentinha e crocante envolvendo deliciosos recheios de banana ou maçã com gostinho de doce caseiro', 10.9, true, false, '{datetime.utcnow()}', null, '{category_2_id}', '{user_3_id}', null)
                         '''
             )
         )

@@ -9,6 +9,7 @@ from core.domain.entities.category import Category
 from core.domain.entities.user import User
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
+from security import has_permission
 
 
 class CategoryCase(ICategoryCase):
@@ -28,6 +29,7 @@ class CategoryCase(ICategoryCase):
             raise ObjectNotFound(msg, 404)
         return result
 
+    @has_permission(permission='admin')
     def create(self, obj: Category) -> Category:
         obj.id = uuid4()
         obj.created_by = self.current_user.id
@@ -38,10 +40,12 @@ class CategoryCase(ICategoryCase):
             logger.warning(msg)
             raise DuplicateObject(msg, 409)
 
+    @has_permission(permission='admin')
     def update(self, id, new_values: Category) -> Category:
         new_values.id = None
         new_values.updated_by = self.current_user.id
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
 
+    @has_permission(permission='admin')
     def delete(self, id):
         return self.repository.delete(id, self.current_user)

@@ -9,3 +9,8 @@ class DuplicateObject(HTTPException):
 class ObjectNotFound(HTTPException):
     def __init__(self, msg: str, status_code: int):
         super(ObjectNotFound, self).__init__(status_code=status_code, detail=msg)
+
+
+class InvalidEmail(HTTPException):
+    def __init__(self, msg: str, status_code: int):
+        super(InvalidEmail, self).__init__(status_code=status_code, detail=msg)
