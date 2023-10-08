@@ -3,10 +3,11 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
-from tasty_delivery.adapter.database.db import get_db
-from tasty_delivery.core.application.use_cases.product.product_case import ProductCase
-from tasty_delivery.core.domain.entities.product import Product as Product
-from tasty_delivery.core.domain.exceptions.exception_schema import ObjectNotFound, ObjectDuplicated
+from adapter.database.db import get_db
+from core.application.use_cases.product.product_case import ProductCase
+from core.domain.entities.product import Product as Product
+from core.domain.exceptions.exception_schema import ObjectNotFound, ObjectDuplicated
+from security import get_current_user
 
 
 class ProductController:
@@ -86,11 +87,11 @@ class ProductController:
     async def products_by_category(self, category_id: UUID, db=Depends(get_db)):
         return self._product_case(db).get_by_category(category_id)
 
-    async def create(self, product: Product, db=Depends(get_db)):
-        return self._product_case(db).create(product)
+    async def create(self, product: Product, db=Depends(get_db), current_user=Depends(get_current_user)):
+        return self._product_case(db, current_user).create(product)
 
-    async def update(self, id: UUID, product: Product, db=Depends(get_db)):
-        return self._product_case(db).update(id, product)
+    async def update(self, id: UUID, product: Product, db=Depends(get_db), current_user=Depends(get_current_user)):
+        return self._product_case(db, current_user).update(id, product)
 
-    async def delete(self, id: UUID, db=Depends(get_db)):
-        return self._product_case(db).delete(id)
+    async def delete(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
+        return self._product_case(db, current_user).delete(id)

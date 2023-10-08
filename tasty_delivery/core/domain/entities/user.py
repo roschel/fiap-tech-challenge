@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from tasty_delivery.core.domain.entities.base_entity import Base
+from core.domain.entities.base_entity import Base
 
 
 class User(Base):
@@ -8,6 +8,11 @@ class User(Base):
     email: str = Field()
     cpf: str = Field(max_length=11)
     username: str = Field()
+    password: str = Field(serialization_alias='hashed_password')
+
+
+class UserOUT(User):
+    password: str = Field(None, exclude=True)
 
 
 class UserInDB(User):

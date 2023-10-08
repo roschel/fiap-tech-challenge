@@ -2,8 +2,8 @@ from typing import List
 
 from sqlalchemy.exc import IntegrityError
 
-from tasty_delivery.adapter.database.models.category import Category as CategoryDb
-from tasty_delivery.core.domain.repositories.icategory_repository import ICategoryRepository
+from adapter.database.models.category import Category as CategoryDb
+from core.domain.repositories.icategory_repository import ICategoryRepository
 
 
 class CategoryRepository(ICategoryRepository):
@@ -34,8 +34,9 @@ class CategoryRepository(ICategoryRepository):
         self.db.commit()
         return self.get_by_id(id)
 
-    def delete(self, id):
-        self.db.query(CategoryDb).filter(CategoryDb.id == id).update({'is_deleted': True})
+    def delete(self, id, current_user):
+        self.db.query(CategoryDb).filter(CategoryDb.id == id).update(
+            {'is_deleted': True, 'updated_by': str(current_user.id)})
         self.db.flush()
         self.db.commit()
         return None

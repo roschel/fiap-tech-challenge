@@ -1,54 +1,79 @@
+from datetime import datetime
+from uuid import uuid4
+
+from sqlalchemy import text
+from sqlalchemy.exc import IntegrityError
+
 from security import get_password_hash
-from tasty_delivery.adapter.database.db import get_db
-from tasty_delivery.core.application.use_cases.category.category_case import CategoryCase
-from tasty_delivery.core.application.use_cases.product.product_case import ProductCase
-from tasty_delivery.core.application.use_cases.user.user_case import UserCase
-from tasty_delivery.core.domain.entities.category import Category
-from tasty_delivery.core.domain.entities.product import Product
-from tasty_delivery.core.domain.entities.user import UserInDB
+from adapter.database.db import get_db
 
 
 def populate():
-    categories_mock = [
-        Category(nome="Lanches"),
-        Category(nome="Sobremesa"),
-        Category(nome="Refrigerantes"),
-    ]
+    try:
+        session = next(get_db())
 
-    result = CategoryCase(next(get_db())).get_all()
+        user_1_id = uuid4()
+        user_2_id = uuid4()
+        user_3_id = uuid4()
+        user_4_id = uuid4()
 
-    if result:
-        return
+        session.execute(
+            text(
+                f'''
+                INSERT INTO users (id, username, nome, email, cpf, hashed_password, is_active, is_deleted, created_at, updated_at)
+                VALUES 
+                    ('{user_1_id}', 'joao', 'João', 'joao@email.com', '11122233344', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null),
+                    ('{user_2_id}', 'victor', 'Victor', 'victor@email.com', '22233344455', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null),
+                    ('{user_3_id}', 'tais', 'Tais', 'tais@email.com', '33344455566', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null),
+                    ('{user_4_id}', 'augusto', 'Augusto', 'augusto@email.com', '44455566677', '{get_password_hash('password')}', true, false, '{datetime.utcnow()}', null)
+                '''
+            )
+        )
+        session.commit()
 
-    for category in categories_mock:
+        category_1_id = uuid4()
+        category_2_id = uuid4()
+        category_3_id = uuid4()
 
-        result = CategoryCase(next(get_db())).create(category)
-        if result.nome == "Lanches":
-            ProductCase(next(get_db())).create(Product(nome="BigMc", category_id=str(result.id)))
-            ProductCase(next(get_db())).create(Product(nome="Whooper", category_id=str(result.id)))
-            ProductCase(next(get_db())).create(Product(nome="Cheedar", category_id=str(result.id)))
-        elif result.nome == "Sobremesa":
-            ProductCase(next(get_db())).create(Product(nome="Casquinha", category_id=str(result.id)))
-        else:
-            ProductCase(next(get_db())).create(Product(nome="Coca Cola", category_id=str(result.id)))
-            ProductCase(next(get_db())).create(Product(nome="Guaraná", category_id=str(result.id)))
-            ProductCase(next(get_db())).create(Product(nome="Fanta Laranja", category_id=str(result.id)))
+        session.execute(
+            text(
+                f'''
+                    INSERT INTO categories (id, nome, is_active, is_deleted, created_at, updated_at, created_by, updated_by)
+                    VALUES 
+                        ('{category_1_id}', 'Lanches', true, false, '{datetime.utcnow()}', null, '{user_1_id}', null),
+                        ('{category_2_id}', 'Sobremesas', true, false, '{datetime.utcnow()}', null, '{user_2_id}', null),
+                        ('{category_3_id}', 'Refrigerantes', true, false, '{datetime.utcnow()}', null, '{user_3_id}', null)
+                    '''
+            )
+        )
+        session.commit()
 
-    mock_user = [
-        UserInDB(nome="João", cpf="11122233344", email="joao@email.com", username="joao",
-                 hashed_password=get_password_hash('password')),
-        UserInDB(nome="Victor", cpf="22233344455", email="victor@email.com", username="victor",
-                 hashed_password=get_password_hash('password')),
-        UserInDB(nome="Tais", cpf="33344455566", email="tais@email.com", username="tais",
-                 hashed_password=get_password_hash('password')),
-        UserInDB(nome="Augusto", cpf="44455566677", email="augusto@email.com", username="augusto",
-                 hashed_password=get_password_hash('password')),
-    ]
+        product_1_id = uuid4()
+        product_2_id = uuid4()
+        product_3_id = uuid4()
+        product_4_id = uuid4()
+        product_5_id = uuid4()
+        product_6_id = uuid4()
+        product_7_id = uuid4()
 
-    result = UserCase(next(get_db())).get_all()
+        session.execute(
+            text(
+                f'''
+                        INSERT INTO products (id, nome, is_active, is_deleted, created_at, updated_at, category_id, created_by, updated_by)
+                        VALUES 
+                            ('{product_1_id}', 'Whopper', true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_1_id}', null),
+                            ('{product_2_id}', 'BigMc', true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_2_id}', null),
+                            ('{product_3_id}', 'Cheddar', true, false, '{datetime.utcnow()}', null, '{category_1_id}', '{user_3_id}', null),
+                            ('{product_4_id}', 'Coca-Cola', true, false, '{datetime.utcnow()}', null, '{category_3_id}', '{user_4_id}', null),
+                            ('{product_5_id}', 'Guaraná', true, false, '{datetime.utcnow()}', null, '{category_3_id}', '{user_1_id}', null),
+                            ('{product_6_id}', 'Casquinha', true, false, '{datetime.utcnow()}', null, '{category_2_id}', '{user_2_id}', null),
+                            ('{product_7_id}', 'Torta de maçã', true, false, '{datetime.utcnow()}', null, '{category_2_id}', '{user_3_id}', null)
+                        '''
+            )
+        )
+        session.commit()
 
-    if result:
-        return
+        session.close()
 
-    for user in mock_user:
-        UserCase(next(get_db())).create(user)
+    except IntegrityError:
+        pass

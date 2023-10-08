@@ -2,12 +2,12 @@ from uuid import uuid4
 
 from sqlalchemy.exc import IntegrityError
 
+from adapter.database.models.user import User as UserDB
+from adapter.repositories.user_repository import UserRepository
+from core.application.use_cases.user.iuser_case import IUserCase
+from core.domain.entities.user import User, UserOUT
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
-from tasty_delivery.adapter.database.models.user import User as UserDB
-from tasty_delivery.adapter.repositories.user_repository import UserRepository
-from tasty_delivery.core.application.use_cases.user.iuser_case import IUserCase
-from tasty_delivery.core.domain.entities.user import User
 
 
 class UserCase(IUserCase):
@@ -26,10 +26,15 @@ class UserCase(IUserCase):
             raise ObjectNotFound(msg, 404)
         return result
 
-    def create(self, obj: User) -> User:
+    def create(self, obj: User) -> UserOUT:
+        from security import get_password_hash
+
         try:
             obj.id = uuid4()
-            return self.repository.create(UserDB(**vars(obj)))
+
+            obj.password = get_password_hash(obj.password)
+            result = self.repository.create(UserDB(**obj.model_dump(exclude_none=True, by_alias=True)))
+            return UserOUT(**vars(result))
         except IntegrityError:
             msg = "Usuário já existente na base de dados"
             logger.warning(msg)

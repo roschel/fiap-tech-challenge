@@ -5,15 +5,13 @@ from sqlalchemy import Column, String, BOOLEAN, TIMESTAMP, UUID
 from adapter.database.db import Base
 
 
-class User(Base):
-    __tablename__ = 'users'
+class Client(Base):
+    __tablename__ = 'clients'
 
     id = Column(UUID, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
     nome = Column(String)
     email = Column(String, unique=True)
     cpf = Column(String, unique=True)
-    hashed_password = Column(String, nullable=False)
     is_active = Column(BOOLEAN)
     is_deleted = Column(BOOLEAN)
     created_at = Column(TIMESTAMP, default=datetime.utcnow())

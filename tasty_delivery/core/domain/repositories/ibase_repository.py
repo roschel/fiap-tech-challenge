@@ -20,5 +20,5 @@ class IBaseRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def delete(self, id):
+    def delete(self, id, current_user):
         raise NotImplementedError

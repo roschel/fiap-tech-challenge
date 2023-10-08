@@ -2,8 +2,8 @@ from typing import List
 
 from sqlalchemy.exc import IntegrityError
 
-from tasty_delivery.adapter.database.models.user import User as UserDb
-from tasty_delivery.core.domain.repositories.iuser_repository import IUserRepository
+from adapter.database.models.user import User as UserDb
+from core.domain.repositories.iuser_repository import IUserRepository
 
 
 class UserRepository(IUserRepository):
@@ -34,8 +34,8 @@ class UserRepository(IUserRepository):
         self.db.commit()
         return self.get_by_id(id)
 
-    def delete(self, id):
-        self.db.query(UserDb).filter(UserDb.id == id).update({'is_deleted': True})
+    def delete(self, id, current_user):
+        self.db.query(UserDb).filter(UserDb.id == id).update({'is_deleted': True, 'updated_by': str(current_user.id)})
         self.db.flush()
         self.db.commit()
         return None

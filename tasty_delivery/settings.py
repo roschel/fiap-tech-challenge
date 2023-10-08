@@ -10,12 +10,11 @@ class Settings(BaseSettings):
     # POSTGRES
     DB_USERNAME: str = Field("postgres")
     DB_PASSWORD: str = Field("password")
-    # DB_HOST: str = Field("postgres_db")
     DB_HOST: str = Field("localhost")
     DB_DATABASE: str = Field("tasty_delivery")
 
     # TOKEN
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(5)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(30)
     SECRET_KEY: str = Field('')
     ALGORITHM: str = Field('HS256')
 

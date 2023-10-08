@@ -2,18 +2,20 @@ from uuid import uuid4
 
 from sqlalchemy.exc import IntegrityError
 
+from adapter.database.models.category import Category as CategoryDB
+from adapter.repositories.category_repository import CategoryRepository
+from core.application.use_cases.category.icategory_case import ICategoryCase
+from core.domain.entities.category import Category
+from core.domain.entities.user import User
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
-from tasty_delivery.adapter.database.models.category import Category as CategoryDB
-from tasty_delivery.adapter.repositories.category_repository import CategoryRepository
-from tasty_delivery.core.application.use_cases.category.icategory_case import ICategoryCase
-from tasty_delivery.core.domain.entities.category import Category
 
 
 class CategoryCase(ICategoryCase):
 
-    def __init__(self, db=None):
+    def __init__(self, db=None, current_user: User = None):
         self.repository = CategoryRepository(db)
+        self.current_user = current_user
 
     def get_all(self):
         return self.repository.get_all()
@@ -28,6 +30,7 @@ class CategoryCase(ICategoryCase):
 
     def create(self, obj: Category) -> Category:
         obj.id = uuid4()
+        obj.created_by = self.current_user.id
         try:
             return self.repository.create(CategoryDB(**vars(obj)))
         except IntegrityError:
@@ -37,7 +40,8 @@ class CategoryCase(ICategoryCase):
 
     def update(self, id, new_values: Category) -> Category:
         new_values.id = None
+        new_values.updated_by = self.current_user.id
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
 
     def delete(self, id):
-        return self.repository.delete(id)
+        return self.repository.delete(id, self.current_user)

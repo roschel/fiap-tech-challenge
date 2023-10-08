@@ -3,6 +3,7 @@ from pydantic import Field
 from core.domain.entities.base_entity import Base
 
 
-class Product(Base):
+class Client(Base):
     nome: str = Field()
-    category_id: str = Field()
+    email: str = Field()
+    cpf: str = Field(max_length=11)

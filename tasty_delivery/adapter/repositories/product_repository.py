@@ -2,8 +2,8 @@ from typing import List
 
 from sqlalchemy.exc import IntegrityError
 
-from tasty_delivery.adapter.database.models.product import Product as ProductDb
-from tasty_delivery.core.domain.repositories.iproduct_repository import IProductRepository
+from adapter.database.models.product import Product as ProductDb
+from core.domain.repositories.iproduct_repository import IProductRepository
 
 
 class ProductRepository(IProductRepository):
@@ -37,8 +37,9 @@ class ProductRepository(IProductRepository):
         self.db.commit()
         return self.get_by_id(id)
 
-    def delete(self, id):
-        self.db.query(ProductDb).filter(ProductDb.id == id).update({'is_deleted': True})
+    def delete(self, id, current_user):
+        self.db.query(ProductDb).filter(ProductDb.id == id).update(
+            {'is_deleted': True, 'updated_by': str(current_user.id)})
         self.db.flush()
         self.db.commit()
         return None
