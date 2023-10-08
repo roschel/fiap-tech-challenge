@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     DB_DATABASE: str = Field("tasty_delivery")
 
     # TOKEN
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(30)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(1440)
     SECRET_KEY: str = Field('')
     ALGORITHM: str = Field('HS256')
 

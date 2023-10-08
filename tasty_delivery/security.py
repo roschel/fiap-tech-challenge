@@ -39,6 +39,8 @@ class TokenData(BaseModel):
 
 def get_current_user(token=Security(bearer_token)):
     from core.application.use_cases.user.user_case import UserCase
+    from core.application.use_cases.client.client_case import ClientCase
+
     try:
         payload = jwt.decode(token.credentials, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
     except AttributeError:
@@ -58,7 +60,10 @@ def get_current_user(token=Security(bearer_token)):
     token_scopes = payload.get("scopes", [])
     token_data = TokenData(scopes=token_scopes, username=username)
 
-    user = UserCase(next(get_db())).get_by_username(user_name=token_data.username)
+    if 'client' in token_scopes:
+        user = ClientCase(next(get_db())).get_by_cpf(cpf=token_data.username)
+    else:
+        user = UserCase(next(get_db())).get_by_username(user_name=token_data.username)
     if not user:
         logger.warning(CREDENTIAL_ERROR)
         raise AuthenticationError(status_code=status.HTTP_401_UNAUTHORIZED, msg=CREDENTIAL_ERROR)

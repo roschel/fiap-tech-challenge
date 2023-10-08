@@ -55,4 +55,7 @@ class ClientCase(IClientCase):
     @has_permission(permission=['admin', 'client'])
     def get_by_cpf(self, cpf):
         result = self.repository.get_by_cpf(cpf)
-        return Client(**vars(result))
+        if result:
+            return Client(**vars(result))
+        else:
+            return None

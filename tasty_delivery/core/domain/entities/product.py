@@ -13,6 +13,13 @@ class ProductIN(Base):
     category_id: UUID = Field()
 
 
+class ProductUpdate(Base):
+    nome: str | None = Field(None)
+    descricao: str | None = Field(None)
+    preco: float | None = Field(gt=0)
+    category_id: UUID | None = Field(None)
+
+
 class ProductOUT(Base):
     nome: str = Field()
     descricao: str = Field()
