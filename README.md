@@ -1,13 +1,16 @@
+.
 # Tasty Delivery 🍕
 
 App que conecta clientes ao restaurante Tasty, sem passar pela
 camada de atendimento presencial.
 
-### :: Iniciando o projeto
+### :: Buildando e rodando o projeto
 
-- Dentro pasta tasty_delivery, run:
+**`docker-compose up `**
 
-**`uvicorn tasty_delivery.server:app`**
+### :: Acessando a documentacão
+
+- Disponível em `localhost:8000/docs`
 
 ### Postman
 

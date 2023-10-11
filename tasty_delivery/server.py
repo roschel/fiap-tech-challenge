@@ -39,8 +39,8 @@ app.include_router(clients_controller.router)
 app.include_router(user_controller.router)
 app.include_router(category_controller.router)
 app.include_router(products_controller.router)
-app.include_router(auth_controller.router)
 app.include_router(order_controller.router)
+app.include_router(auth_controller.router)
 
 
 @app.on_event("startup")

@@ -34,8 +34,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+    is_anonymous: bool = False
     scopes: list[str] = []
-
 
 def get_current_user(token=Security(bearer_token)):
     from core.application.use_cases.user.user_case import UserCase
@@ -56,19 +56,23 @@ def get_current_user(token=Security(bearer_token)):
 
     username: str = payload.get("sub")
     if not username:
-        raise AuthenticationError(status_code=status.HTTP_401_UNAUTHORIZED, msg=CREDENTIAL_ERROR)
+        username = "anonymous_user"
+        is_anonymous = True
+        #raise AuthenticationError(status_code=status.HTTP_401_UNAUTHORIZED, msg=CREDENTIAL_ERROR)
+    else:
+        is_anonymous = False
+
     token_scopes = payload.get("scopes", [])
-    token_data = TokenData(scopes=token_scopes, username=username)
+    token_data = TokenData(scopes=token_scopes, username=username, is_anonymous=is_anonymous)
 
     if 'client' in token_scopes:
         user = ClientCase(next(get_db())).get_by_cpf(cpf=token_data.username)
     else:
         user = UserCase(next(get_db())).get_by_username(user_name=token_data.username)
-    if not user:
+    if not user and not token_data.is_anonymous:
         logger.warning(CREDENTIAL_ERROR)
         raise AuthenticationError(status_code=status.HTTP_401_UNAUTHORIZED, msg=CREDENTIAL_ERROR)
     return user
-
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
@@ -103,8 +107,11 @@ def authenticate_user(form_data) -> Token:
     from core.application.use_cases.client.client_case import ClientCase
 
     if form_data.scopes and 'client' in form_data.scopes:
-        user = ClientCase(next(get_db())).get_by_cpf(form_data.username)
-        user = ClientAuth(**user.model_dump(), username=user.cpf)
+        if form_data.username:
+            user = ClientCase(next(get_db())).get_by_cpf(form_data.username)
+            user = ClientAuth(**user.model_dump(), username=user.cpf)
+        else:
+            user = ClientAuth(cpf="anonymous_user")
     else:
         user = UserCase(next(get_db())).get_by_username(form_data.username)
 

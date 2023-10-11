@@ -1,21 +1,25 @@
 from datetime import datetime
 from typing import List
 
-from sqlalchemy import Column, String, BOOLEAN, TIMESTAMP, UUID, ForeignKey
+from sqlalchemy import Column, String, Float, Boolean, TIMESTAMP, Integer, UUID, ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from adapter.database.db import Base
-from adapter.database.models.product import Product
 
 class Order(Base):
     __tablename__ = 'orders'
 
     id = Column(UUID, primary_key=True, index=True)
-    nome = Column(String)
-    is_active = Column(BOOLEAN)
-    is_deleted = Column(BOOLEAN)
-    created_at = Column(TIMESTAMP, default=datetime.utcnow())
-    updated_at = Column(TIMESTAMP, onupdate=datetime.utcnow())
+    client_id = Column(String)
+    is_active = Column(Boolean)
+    is_deleted = Column(Boolean)
+    created_at = Column(TIMESTAMP, default=datetime.utcnow)
+    updated_at = Column(TIMESTAMP, onupdate=datetime.utcnow)
     created_by: Mapped[UUID] = mapped_column(ForeignKey("clients.id"))
     updated_by: Mapped[UUID] = mapped_column(ForeignKey("clients.id"), nullable=True)
-    products: Mapped[List[Product]] = relationship()
+    total = Column(Float)
+    quantidade = Column(Integer)
+    desconto = Column(Float)
+    status = Column(String)
+    # Relação com Produtos
+    product_id = Column(UUID, ForeignKey("products.id"))

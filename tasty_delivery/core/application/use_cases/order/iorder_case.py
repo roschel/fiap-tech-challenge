@@ -1,29 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 
-from core.domain.entities.order import Order, Combo
+from core.application.use_cases.ibase_use_case import IBaseUseCase
 
-class IOrderCase(ABC):
-    
+class IOrderCase(IBaseUseCase):    
     @abstractmethod
-    def create_order(self, order: Order):
-        """
-        Create a new order.
-        Args:
-            order (Order): The order to be created.
-        Returns:
-            Order: The created order.
-        """
-        pass
-   
-    @abstractmethod
-    def create_combo(self, combo: Combo):
-        """
-        Create a new combo.
-        Args:
-            combo (Combo): The combo to be created.
-        Returns:
-            Combo: The created combo.
-        """
-        pass
-    
-    # Additional methods related to orders and combos can be added here
+    def get_by_client(self, client_id):
+        raise NotImplementedError
