@@ -10,7 +10,7 @@ from security.user_security import authenticate_user, handle_user_signup
 
 class AuthController:
     def __init__(self):
-        self.router = APIRouter(tags=["Authentication"], prefix='/auth')
+        self.router = APIRouter(tags=["User Authentication"], prefix='/auth-user')
         self.router.add_api_route(
             path="/login",
             endpoint=self.login,
@@ -34,9 +34,8 @@ class AuthController:
             cpf: Annotated[str, Form()],
             nome: Annotated[str, Form()],
             email: Annotated[str, Form()],
-            admin: Annotated[bool, Form()] = False,
-            password: Annotated[str, Form()] = None,
+            password: Annotated[str, Form()],
             current_user=Depends(get_current_user)
     ):
-        auth = Auth(cpf=cpf, nome=nome, email=email, admin=admin, password=password)
+        auth = Auth(cpf=cpf, nome=nome, email=email, admin=True, password=password)
         return handle_user_signup(auth, current_user)

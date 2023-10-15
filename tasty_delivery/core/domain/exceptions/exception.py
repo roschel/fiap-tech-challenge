@@ -14,3 +14,8 @@ class ObjectNotFound(HTTPException):
 class InvalidEmail(HTTPException):
     def __init__(self, msg: str, status_code: int):
         super(InvalidEmail, self).__init__(status_code=status_code, detail=msg)
+
+
+class InvalidStatus(HTTPException):
+    def __init__(self, msg: str, status_code: int):
+        super(InvalidStatus, self).__init__(status_code=status_code, detail=msg)

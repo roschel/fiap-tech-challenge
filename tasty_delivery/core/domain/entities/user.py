@@ -31,7 +31,7 @@ class User(Base):
     @field_validator('password', mode='before')
     @classmethod
     def generate_password(cls, v: str):
-        from security import get_password_hash
+        from security.base import get_password_hash
 
         return get_password_hash(v)
 

@@ -4,7 +4,7 @@ from uuid import uuid4
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
-from security_a import get_password_hash
+from security.base import get_password_hash
 from adapter.database.db import get_db
 
 

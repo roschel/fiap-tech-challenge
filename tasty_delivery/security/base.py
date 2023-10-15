@@ -6,8 +6,6 @@ from jose import jwt, ExpiredSignatureError, JWTError
 from passlib.context import CryptContext
 from pydantic import BaseModel, ValidationError
 
-from core.application.use_cases.user.user_case import UserCase
-from core.application.use_cases.client.client_case import ClientCase
 from adapter.database.db import get_db
 from logger import logger
 from settings import settings
@@ -38,7 +36,14 @@ def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
 
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
 def get_current_user(token=Security(bearer_token)):
+    from core.application.use_cases.user.user_case import UserCase
+    from core.application.use_cases.client.client_case import ClientCase
+    
     try:
         payload = jwt.decode(token.credentials, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
     except AttributeError:

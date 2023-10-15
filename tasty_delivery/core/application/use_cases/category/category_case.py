@@ -9,7 +9,7 @@ from core.domain.entities.category import CategoryOUT
 from core.domain.entities.user import User
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
-from security_a import has_permission
+from security.base import has_permission
 
 
 class CategoryCase(ICategoryCase):

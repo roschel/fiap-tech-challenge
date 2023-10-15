@@ -9,10 +9,11 @@ from core.application.use_cases.product.iproduct_case import IProductCase
 from core.domain.entities.product import ProductIN, ProductOUT, ProductUpdateIN
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
-from security_a import has_permission
+from security.base import has_permission
 
 
 class ProductCase(IProductCase):
+
     def __init__(self, db=None, current_user: UserDB = None):
         self.repository = ProductRepository(db)
         self.current_user = current_user
@@ -34,9 +35,9 @@ class ProductCase(IProductCase):
     @has_permission(permission=['admin'])
     def create(self, obj: ProductIN) -> ProductOUT:
         try:
-            obj.id = uuid4()
+            id = uuid4()
             obj.created_by = self.current_user.id
-            return self.repository.create(ProductDB(**vars(obj)))
+            return self.repository.create(ProductDB(**vars(obj), id=id))
         except IntegrityError:
             msg = "Produto já existente na base de dados"
             logger.warning(msg)

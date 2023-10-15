@@ -18,12 +18,12 @@ def get_user_token(user):
 
 
 def handle_user_signup(user, current_user):
-    result = UserCase(next(get_db()), current_user).get_by_cpf(user.cpf)
+    result = UserCase(next(get_db())).get_by_cpf(user.cpf)
     if result:
         raise DuplicateObject("Usuário já existente na base de dados", 409)
     else:
         user = User(**user.model_dump(), username=user.email)
-        user = UserCase(next(get_db()), current_user).create(user)
+        user = UserCase(next(get_db())).create(user)
 
         return get_user_token(user)
 

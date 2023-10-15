@@ -36,4 +36,4 @@ def signup_client(client: Auth):
         client = Client(**client.model_dump())
         client = ClientCase(next(get_db())).create(client)
 
-        return get_token(client)
+        return get_client_token(client)
