@@ -1,25 +1,22 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
-from fastapi import status, Security, HTTPException
+from fastapi import HTTPException, Security, status
 from fastapi.security import HTTPBearer
-from jose import jwt, JWTError, ExpiredSignatureError
+from jose import jwt, ExpiredSignatureError, JWTError
 from passlib.context import CryptContext
 from pydantic import BaseModel, ValidationError
 
+from core.application.use_cases.user.user_case import UserCase
+from core.application.use_cases.client.client_case import ClientCase
 from adapter.database.db import get_db
-from core.domain.entities.client import Client
-from core.domain.entities.user import User
-from core.domain.exceptions.exception import ObjectNotFound, DuplicateObject
-from core.domain.value_objects.auth import Auth
-from core.domain.value_objects.client_auth import ClientAuth
 from logger import logger
 from settings import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-bearer_token = HTTPBearer()
-
 EXPIRATION_ERROR = "Credencial expirada"
 CREDENTIAL_ERROR = "Não foi possível validar o token"
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+bearer_token = HTTPBearer()
 
 
 class AuthenticationError(HTTPException):
@@ -37,10 +34,11 @@ class TokenData(BaseModel):
     scopes: list[str] = []
 
 
-def get_current_user(token=Security(bearer_token)):
-    from core.application.use_cases.user.user_case import UserCase
-    from core.application.use_cases.client.client_case import ClientCase
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
 
+
+def get_current_user(token=Security(bearer_token)):
     try:
         payload = jwt.decode(token.credentials, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
     except AttributeError:
@@ -70,14 +68,6 @@ def get_current_user(token=Security(bearer_token)):
     return user
 
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -87,60 +77,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
-
-
-def get_token(user):
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username, "scopes": user.scopes},
-        expires_delta=access_token_expires,
-    )
-    return Token(**{"access_token": access_token, "token_type": "bearer"})
-
-
-def authenticate_user(form_data) -> Token:
-    from core.application.use_cases.user.user_case import UserCase
-    from core.application.use_cases.client.client_case import ClientCase
-
-    if form_data.scopes and 'client' in form_data.scopes:
-        user = ClientCase(next(get_db())).get_by_cpf(form_data.username)
-        user = ClientAuth(**user.model_dump(), username=user.cpf)
-    else:
-        user = UserCase(next(get_db())).get_by_username(form_data.username)
-
-        if not user or not verify_password(form_data.password, user.hashed_password):
-            raise ObjectNotFound(status_code=400, msg="Usuário ou senha incorretos")
-
-    return get_token(user)
-
-
-def handle_user_signup(user, token):
-    from core.application.use_cases.user.user_case import UserCase
-
-    current_user = get_current_user(token.split(' ')[1])
-
-    result = UserCase(next(get_db()), current_user).get_by_cpf(user.cpf)
-    if result:
-        raise DuplicateObject("Usuário já existente na base de dados", 409)
-    else:
-        user = User(**user.model_dump(), username=user.email)
-        user = UserCase(next(get_db()), current_user).create(user)
-
-        return get_token(user)
-
-
-def handle_client_signup(user: Auth):
-    from core.application.use_cases.client.client_case import ClientCase
-
-    client = ClientCase(next(get_db())).get_by_cpf(user.cpf)
-
-    if client:
-        raise DuplicateObject("Cliente já existente na base de dados", 409)
-    else:
-        user = Client(**user.model_dump())
-        user = ClientCase(next(get_db())).create(user)
-
-        return get_token(ClientAuth(**user.model_dump(), username=user.cpf))
 
 
 def has_permission(permission):

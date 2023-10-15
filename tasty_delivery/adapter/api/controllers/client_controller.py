@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends
 
 from adapter.database.db import get_db
 from core.application.use_cases.client.client_case import ClientCase
-from core.domain.entities.client import Client
+from core.domain.entities.client import Client, ClientUpdate
 from core.domain.exceptions.exception_schema import ObjectNotFound, ObjectDuplicated
-from security import get_current_user
+from security.base import get_current_user
 
 
 class ClientController:
@@ -49,7 +49,8 @@ class ClientController:
                 409: {"model": ObjectDuplicated}
             },
             status_code=201,
-            response_model_exclude_none=True
+            response_model_exclude_none=True,
+            include_in_schema=False
         )
         self.router.add_api_route(
             path="/{id}",
@@ -89,7 +90,7 @@ class ClientController:
     async def create(self, client: Client, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).create(client)
 
-    async def update(self, id: UUID, client: Client, db=Depends(get_db), current_user=Depends(get_current_user)):
+    async def update(self, id: UUID, client: ClientUpdate, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).update(id, client)
 
     async def delete(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
