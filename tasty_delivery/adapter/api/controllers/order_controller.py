@@ -7,8 +7,6 @@ from adapter.database.db import get_db
 from core.application.use_cases.order.order_case import OrderCase
 from core.domain.entities.order import OrderOUT, OrderIN, OrderUpdate
 from core.domain.exceptions.exception_schema import ObjectNotFound, ObjectDuplicated
-from security import get_current_user
-
 
 class OrderController:
     
@@ -86,11 +84,11 @@ class OrderController:
     async def order_by_client(self, client_id: UUID, db=Depends(get_db)):
         return self._order_case(db).get_by_client(client_id)
 
-    async def create(self, order: OrderIN, db=Depends(get_db), current_user=Depends(get_current_user)):
-        return self._order_case(db, current_user).create(order)
+    async def create(self, order: OrderIN, db=Depends(get_db)):
+        return self._order_case(db).create(order)
 
-    async def update(self, id: UUID, order: OrderUpdate, db=Depends(get_db), current_user=Depends(get_current_user)):
-        return self._order_case(db, current_user).update(id, order)
+    async def update(self, id: UUID, order: OrderUpdate, db=Depends(get_db)):
+        return self._order_case(db).update(id, order)
 
-    async def delete(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
-        self._order_case(db, current_user).delete(id)
+    async def delete(self, id: UUID, db=Depends(get_db)):
+        self._order_case(db).delete(id)
