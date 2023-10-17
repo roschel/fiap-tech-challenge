@@ -5,7 +5,6 @@ from sqlalchemy import Column, String, Float, Boolean, TIMESTAMP, Integer, UUID,
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from adapter.database.db import Base
-
 class Order(Base):
     __tablename__ = 'orders'
 
@@ -17,9 +16,9 @@ class Order(Base):
     updated_at = Column(TIMESTAMP, onupdate=datetime.utcnow)
     created_by: Mapped[UUID] = mapped_column(ForeignKey("clients.id"))
     updated_by: Mapped[UUID] = mapped_column(ForeignKey("clients.id"), nullable=True)
-    total = Column(Float)
+    preco = Column(Float)
     quantidade = Column(Integer)
+    total = Column(Float)
     desconto = Column(Float)
     status = Column(String)
-    # Relação com Produtos
-    product_id = Column(UUID, ForeignKey("products.id"))
+    products = relationship("Product", back_populates="order")

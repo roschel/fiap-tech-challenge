@@ -16,9 +16,9 @@ from security import has_permission
 
 class OrderCase(IOrderCase):
 
-    def __init__(self, db=None, current_client: ClientDB = None):
+    def __init__(self, db=None):
         self.repository = OrderRepository(db)
-        self.current_client = current_client
+        # self.current_client = current_client
 
     def get_all(self):
         return self.repository.get_all()
@@ -35,10 +35,10 @@ class OrderCase(IOrderCase):
         return self.repository.get_by_client(client_id)
 
     @has_permission(permission=['client'])
-    def create_order(self, order: OrderIN) -> OrderOUT:
+    def create(self, order: OrderIN) -> OrderOUT:
         try:
             order.id = uuid4()
-            order.created_by = self.current_client.id
+            # order.created_by = self.current_client.id
             return self.repository.create(OrderDB(**vars(order)))
         except IntegrityError:
             msg = "Pedido já existente criado na base de dados."
@@ -48,9 +48,9 @@ class OrderCase(IOrderCase):
     @has_permission(permission=['client'])
     def update(self, id, new_values: OrderUpdate) -> OrderOUT:
         new_values.id = None
-        new_values.updated_by = self.current_client.id
+        # new_values.updated_by = self.current_client.id
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
 
     @has_permission(permission=['client'])
     def delete(self, id):
-        return self.repository.delete(id, self.current_client)
+        return self.repository.delete(id)

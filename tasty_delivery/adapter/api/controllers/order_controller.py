@@ -8,6 +8,8 @@ from core.application.use_cases.order.order_case import OrderCase
 from core.domain.entities.order import OrderOUT, OrderIN, OrderUpdate
 from core.domain.exceptions.exception_schema import ObjectNotFound, ObjectDuplicated
 
+from security import get_current_user
+
 class OrderController:
     
     def __init__(self, order_case: OrderCase = None):
