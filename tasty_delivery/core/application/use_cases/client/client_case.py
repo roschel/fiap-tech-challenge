@@ -8,7 +8,7 @@ from core.application.use_cases.client.iclient_case import IClientCase
 from core.domain.entities.client import Client
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
-from security import has_permission
+from security.base import has_permission
 
 
 class ClientCase(IClientCase):

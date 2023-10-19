@@ -8,7 +8,7 @@ from core.application.use_cases.user.iuser_case import IUserCase
 from core.domain.entities.user import User, UserOUT
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
-from security import has_permission
+from security.base import has_permission
 
 
 class UserCase(IUserCase):

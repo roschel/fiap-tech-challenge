@@ -3,7 +3,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
-from security import get_current_user
+from security.base import get_current_user
 from adapter.database.db import get_db
 from core.application.use_cases.user.user_case import UserCase
 from core.domain.entities.user import User as User, UserUpdate, UserOUT

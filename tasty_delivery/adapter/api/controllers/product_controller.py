@@ -5,9 +5,9 @@ from fastapi import APIRouter, Depends
 
 from adapter.database.db import get_db
 from core.application.use_cases.product.product_case import ProductCase
-from core.domain.entities.product import ProductOUT, ProductIN, ProductUpdate
+from core.domain.entities.product import ProductOUT, ProductIN, ProductUpdateIN
 from core.domain.exceptions.exception_schema import ObjectNotFound, ObjectDuplicated
-from security import get_current_user
+from security.base import get_current_user
 
 
 class ProductController:
@@ -90,7 +90,7 @@ class ProductController:
     async def create(self, product: ProductIN, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._product_case(db, current_user).create(product)
 
-    async def update(self, id: UUID, product: ProductUpdate, db=Depends(get_db),
+    async def update(self, id: UUID, product: ProductUpdateIN, db=Depends(get_db),
                      current_user=Depends(get_current_user)):
         return self._product_case(db, current_user).update(id, product)
 

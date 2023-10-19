@@ -5,11 +5,11 @@ from sqlalchemy.exc import IntegrityError
 from adapter.database.models.category import Category as CategoryDB
 from adapter.repositories.category_repository import CategoryRepository
 from core.application.use_cases.category.icategory_case import ICategoryCase
-from core.domain.entities.category import Category
+from core.domain.entities.category import CategoryOUT
 from core.domain.entities.user import User
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
-from security import has_permission
+from security.base import has_permission
 
 
 class CategoryCase(ICategoryCase):
@@ -30,7 +30,7 @@ class CategoryCase(ICategoryCase):
         return result
 
     @has_permission(permission=['admin'])
-    def create(self, obj: Category) -> Category:
+    def create(self, obj: CategoryOUT) -> CategoryOUT:
         obj.id = uuid4()
         obj.created_by = self.current_user.id
         try:
@@ -41,7 +41,7 @@ class CategoryCase(ICategoryCase):
             raise DuplicateObject(msg, 409)
 
     @has_permission(permission=['admin'])
-    def update(self, id, new_values: Category) -> Category:
+    def update(self, id, new_values: CategoryOUT) -> CategoryOUT:
         new_values.id = None
         new_values.updated_by = self.current_user.id
         return self.repository.update(id, new_values.model_dump(exclude_none=True))

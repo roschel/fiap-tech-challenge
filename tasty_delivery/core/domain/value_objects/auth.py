@@ -7,7 +7,7 @@ class Auth(BaseModel):
     cpf: str = Field(max_length=11, min_length=11)
     nome: str = Field(None)
     email: str = Field(None)
-    admin: bool = Field(False)
+    admin: bool | None = Field(False)
     password: str | None = Field(None)
 
     @field_validator('email')
