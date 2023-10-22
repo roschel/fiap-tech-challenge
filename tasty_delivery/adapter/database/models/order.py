@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from sqlalchemy import Column, String, Float, Boolean, TIMESTAMP, Integer, UUID, ForeignKey, JSON, ARRAY
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import Column, String, Float, Boolean, TIMESTAMP, Integer, UUID, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.ext.associationproxy import association_proxy
 
 from adapter.database.db import Base
 
@@ -19,4 +20,6 @@ class Order(Base):
     total = Column(Float)
     desconto = Column(Float)
     status = Column(String)
-    produtos = mapped_column(ARRAY(JSON))
+
+    product_association = relationship('OrderProductAssociation', back_populates='order')
+    products = association_proxy("product_association", "product")

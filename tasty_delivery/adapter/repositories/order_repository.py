@@ -3,6 +3,7 @@ from typing import List
 from sqlalchemy.exc import IntegrityError
 
 from adapter.database.models.order import Order as OrderDb
+from adapter.database.models.order_product_association import OrderProductAssociation
 from core.domain.repositories.iorder_repository import IOrderRepository
 
 
@@ -23,9 +24,9 @@ class OrderRepository(IOrderRepository):
 
     def create(self, obj: OrderDb) -> OrderDb:
         try:
-            self.db.add(obj)
+            self.db.add_all(obj)
             self.db.flush()
-            self.db.refresh(obj)
+            # self.db.refresh(obj)
             self.db.commit()
         except IntegrityError as err:
             raise err

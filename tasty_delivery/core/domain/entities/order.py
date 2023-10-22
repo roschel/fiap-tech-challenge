@@ -26,7 +26,7 @@ class Produto(BaseModel):
 
 class OrderIN(BaseModel):
     produtos: List[Produto] = Field()
-    desconto: float = Field(gte=0)
+    desconto: float | None = Field(0, gte=0)
     total: float = Field(gte=0)
 
 
@@ -39,8 +39,8 @@ class OrderUpdate(OrderBase):
 
 
 class OrderOUT(OrderBase):
-    client: Client | None = Field(None)
-    produtos: List[Produto] = Field()
+    client_id: UUID | None = Field(None)
+    produtos: List[Produto] | None = Field()
     desconto: float | None = Field(gte=0)
     total: float | None = Field(gte=0)
     status: str | None = Field()

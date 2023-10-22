@@ -2,9 +2,13 @@ from sqlalchemy.exc import IntegrityError
 
 from adapter.database.models.client import Client as ClientDB
 from adapter.database.models.order import Order as OrderDB
+from adapter.database.models.order_product_association import OrderProductAssociation
 from adapter.repositories.order_repository import OrderRepository
+from adapter.repositories.product_repository import ProductRepository
 from core.application.use_cases.order.iorder_case import IOrderCase
-from core.domain.entities.order import OrderIN, OrderOUT, OrderUpdate
+from core.domain.entities.category import CategoryOUT
+from core.domain.entities.order import OrderIN, OrderOUT, OrderUpdate, Produto
+from core.domain.entities.product import ProductOUT
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound, InvalidStatus
 from core.domain.value_objects.order_status import OrderStatus
 from logger import logger
@@ -24,6 +28,8 @@ class OrderCase(IOrderCase):
                  current_client: ClientDB = None,
                  current_user=None):
         self.repository = OrderRepository(db)
+        self.product_repository = ProductRepository(db)
+        self.session = db
         self.current_client = current_client
         self.current_user = current_user
 
@@ -39,21 +45,68 @@ class OrderCase(IOrderCase):
         return result
 
     def get_by_client(self, client_id):
-        result = self.repository.get_by_client(client_id)
-        return result
+        orders = []
+        produtos = []
+
+        results = self.repository.get_by_client(client_id)
+        for result in results:
+            for produto in result.products:
+                produto = ProductOUT(
+                    nome=produto.nome,
+                    descricao=produto.descricao,
+                    preco=produto.preco,
+                    category=CategoryOUT(**vars(produto.category))
+                )
+                produto = Produto(
+                    produto=produto,
+                    quantidade=result.product_association[0].quantidade,
+                    obs=result.product_association[0].obs
+                )
+                produtos.append(produto)
+
+            order = OrderOUT(
+                client_id=result.client_id,
+                desconto=result.desconto,
+                total=result.total,
+                status=result.status,
+                produtos=produtos
+            )
+            orders.append(order)
+
+        return orders
 
     @has_permission(permission=['client'])
     def create(self, order: OrderIN) -> OrderOUT:
+        associations = []
         client_id = self.current_client.id if self.current_client else None
         try:
-            obj = OrderDB(
-                **order.model_dump(mode='json'),
+            orderdb = OrderDB(
+                total=order.total,
+                desconto=order.desconto,
+                status=OrderCase.RECEBIDO,
                 client_id=client_id,
-                status=OrderCase.RECEBIDO
             )
 
-            return self.repository.create(obj)
-        except IntegrityError:
+            for product in order.produtos:
+                association = OrderProductAssociation(
+                    order=orderdb,
+                    product=self.product_repository.get_by_id(product.produto.id),
+                    quantidade=product.quantidade,
+                    obs=product.obs
+                )
+                associations.append(association)
+
+            self.repository.create(associations)
+
+            return OrderOUT(
+                client_id=orderdb.client_id,
+                desconto=orderdb.desconto,
+                total=orderdb.total,
+                status=orderdb.status,
+                produtos=order.produtos
+            )
+
+        except IntegrityError as e:
             msg = "Pedido já existente criado na base de dados."
             logger.warning(msg)
             raise DuplicateObject(msg, 409)
