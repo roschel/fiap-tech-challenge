@@ -10,7 +10,7 @@ class User(Base):
 
     id = Column(UUID, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
-    nome = Column(String)
+    name = Column(String)
     email = Column(String, unique=True)
     cpf = Column(String, unique=True)
     hashed_password = Column(String, nullable=False)

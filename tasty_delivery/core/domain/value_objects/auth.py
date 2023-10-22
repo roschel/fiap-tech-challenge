@@ -5,7 +5,7 @@ from core.domain.exceptions.exception import InvalidEmail
 
 class Auth(BaseModel):
     cpf: str = Field(max_length=11, min_length=11)
-    nome: str = Field(None)
+    name: str = Field(None)
     email: str = Field(None)
     admin: bool | None = Field(False)
     password: str | None = Field(None)

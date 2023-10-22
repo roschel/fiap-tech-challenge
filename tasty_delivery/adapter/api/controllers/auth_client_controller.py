@@ -32,5 +32,5 @@ class AuthClientController:
                      cpf: Annotated[str, Form()],
                      nome: Annotated[str, Form()],
                      email: Annotated[str, Form()]):
-        auth = Auth(cpf=cpf, nome=nome, email=email)
+        auth = Auth(cpf=cpf, name=nome, email=email)
         return signup_client(auth)

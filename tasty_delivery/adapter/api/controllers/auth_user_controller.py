@@ -37,5 +37,5 @@ class AuthController:
             password: Annotated[str, Form()],
             current_user=Depends(get_current_user)
     ):
-        auth = Auth(cpf=cpf, nome=nome, email=email, admin=True, password=password)
+        auth = Auth(cpf=cpf, name=nome, email=email, admin=True, password=password)
         return handle_user_signup(auth, current_user)

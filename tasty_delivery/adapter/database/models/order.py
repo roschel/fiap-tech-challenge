@@ -18,7 +18,7 @@ class Order(Base):
     client_id: Mapped[UUID] = mapped_column(ForeignKey("clients.id"), nullable=True)
     updated_by: Mapped[UUID] = mapped_column(ForeignKey("users.id"), nullable=True)
     total = Column(Float)
-    desconto = Column(Float)
+    discount = Column(Float)
     status = Column(String)
 
     product_association = relationship('OrderProductAssociation', back_populates='order')

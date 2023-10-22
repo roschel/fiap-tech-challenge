@@ -12,7 +12,7 @@ class Category(Base):
     __tablename__ = 'categories'
 
     id = Column(UUID, primary_key=True, index=True)
-    nome = Column(String)
+    name = Column(String)
     is_active = Column(BOOLEAN)
     is_deleted = Column(BOOLEAN)
     created_at = Column(TIMESTAMP, default=datetime.utcnow())

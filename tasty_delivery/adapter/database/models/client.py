@@ -9,7 +9,7 @@ class Client(Base):
     __tablename__ = 'clients'
 
     id = Column(UUID, primary_key=True, index=True)
-    nome = Column(String)
+    name = Column(String)
     email = Column(String, unique=True)
     cpf = Column(String, unique=True)
     is_active = Column(BOOLEAN)

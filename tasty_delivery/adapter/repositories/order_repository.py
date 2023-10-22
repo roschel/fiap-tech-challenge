@@ -22,7 +22,7 @@ class OrderRepository(IOrderRepository):
     def get_by_client(self, client_id) -> List[OrderDb]:
         return self.db.query(OrderDb).filter(OrderDb.client_id == client_id).all()
 
-    def create(self, obj: OrderDb) -> OrderDb:
+    def create(self, obj: List[OrderProductAssociation]):
         try:
             self.db.add_all(obj)
             self.db.flush()

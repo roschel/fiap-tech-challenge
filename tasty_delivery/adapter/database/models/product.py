@@ -11,9 +11,9 @@ class Product(Base):
     __tablename__ = 'products'
 
     id = Column(UUID, primary_key=True, index=True)
-    nome = Column(String)
-    descricao = Column(String)
-    preco = Column(Float)
+    name = Column(String)
+    description = Column(String)
+    price = Column(Float)
     is_active = Column(BOOLEAN)
     is_deleted = Column(BOOLEAN)
     created_at = Column(TIMESTAMP, default=datetime.utcnow())

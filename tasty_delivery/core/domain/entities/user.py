@@ -7,7 +7,7 @@ from core.domain.exceptions.exception import InvalidEmail
 
 
 class User(Base):
-    nome: str = Field()
+    name: str = Field()
     email: str = Field()
     cpf: str = Field(max_length=11)
     username: str = Field()
@@ -45,7 +45,7 @@ class UserInDB(User):
 
 
 class UserUpdate(Base):
-    nome: str = Field(None)
+    name: str = Field(None)
     email: str = Field(None)
     cpf: str = Field(None, max_length=11)
 

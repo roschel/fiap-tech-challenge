@@ -7,7 +7,7 @@ from adapter.repositories.order_repository import OrderRepository
 from adapter.repositories.product_repository import ProductRepository
 from core.application.use_cases.order.iorder_case import IOrderCase
 from core.domain.entities.category import CategoryOUT
-from core.domain.entities.order import OrderIN, OrderOUT, OrderUpdate, Produto
+from core.domain.entities.order import OrderIN, OrderOUT, OrderUpdate, Product
 from core.domain.entities.product import ProductOUT
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound, InvalidStatus
 from core.domain.value_objects.order_status import OrderStatus
@@ -48,28 +48,31 @@ class OrderCase(IOrderCase):
         orders = []
         produtos = []
 
+        if not client_id:
+            return
+
         results = self.repository.get_by_client(client_id)
         for result in results:
             for produto in result.products:
                 produto = ProductOUT(
-                    nome=produto.nome,
-                    descricao=produto.descricao,
-                    preco=produto.preco,
+                    name=produto.name,
+                    description=produto.description,
+                    price=produto.price,
                     category=CategoryOUT(**vars(produto.category))
                 )
-                produto = Produto(
-                    produto=produto,
-                    quantidade=result.product_association[0].quantidade,
+                produto = Product(
+                    product=produto,
+                    quantity=result.product_association[0].quantidade,
                     obs=result.product_association[0].obs
                 )
                 produtos.append(produto)
 
             order = OrderOUT(
                 client_id=result.client_id,
-                desconto=result.desconto,
+                discount=result.discount,
                 total=result.total,
                 status=result.status,
-                produtos=produtos
+                products=produtos
             )
             orders.append(order)
 
@@ -82,7 +85,7 @@ class OrderCase(IOrderCase):
         try:
             orderdb = OrderDB(
                 total=order.total,
-                desconto=order.desconto,
+                discount=order.discount,
                 status=OrderCase.RECEBIDO,
                 client_id=client_id,
             )
@@ -90,7 +93,7 @@ class OrderCase(IOrderCase):
             for product in order.produtos:
                 association = OrderProductAssociation(
                     order=orderdb,
-                    product=self.product_repository.get_by_id(product.produto.id),
+                    product=self.product_repository.get_by_id(product.product.id),
                     quantidade=product.quantidade,
                     obs=product.obs
                 )
@@ -100,10 +103,10 @@ class OrderCase(IOrderCase):
 
             return OrderOUT(
                 client_id=orderdb.client_id,
-                desconto=orderdb.desconto,
+                discount=orderdb.desconto,
                 total=orderdb.total,
                 status=orderdb.status,
-                produtos=order.produtos
+                products=order.produtos
             )
 
         except IntegrityError as e:

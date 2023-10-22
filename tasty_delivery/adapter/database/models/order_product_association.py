@@ -11,7 +11,7 @@ class OrderProductAssociation(Base):
 
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), primary_key=True)
     product_id: Mapped[UUID] = mapped_column(ForeignKey("products.id"), primary_key=True)
-    quantidade: Mapped[Integer] = Column(Integer)
+    quantity: Mapped[Integer] = Column(Integer)
     obs: Mapped[String] = Column(String, nullable=True)
 
     order: Mapped["Order"] = relationship('Order', back_populates="product_association")
