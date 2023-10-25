@@ -90,11 +90,11 @@ class OrderCase(IOrderCase):
                 client_id=client_id,
             )
 
-            for product in order.produtos:
+            for product in order.products:
                 association = OrderProductAssociation(
                     order=orderdb,
                     product=self.product_repository.get_by_id(product.product.id),
-                    quantidade=product.quantidade,
+                    quantity=product.quantity,
                     obs=product.obs
                 )
                 associations.append(association)
@@ -103,10 +103,10 @@ class OrderCase(IOrderCase):
 
             return OrderOUT(
                 client_id=orderdb.client_id,
-                discount=orderdb.desconto,
+                discount=orderdb.discount,
                 total=orderdb.total,
                 status=orderdb.status,
-                products=order.produtos
+                products=order.products
             )
 
         except IntegrityError as e:
