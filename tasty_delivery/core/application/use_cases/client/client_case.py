@@ -13,7 +13,8 @@ from security.base import has_permission
 
 class ClientCase(IClientCase):
 
-    def __init__(self, db=None):
+    def __init__(self, db=None, current_user=None):
+        self.current_user = current_user
         self.repository = ClientRepository(db)
 
     @has_permission(permission=['admin'])

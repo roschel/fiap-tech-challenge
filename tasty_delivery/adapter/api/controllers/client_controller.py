@@ -82,7 +82,7 @@ class ClientController:
         self._client_case = client_case
 
     async def clients(self, db=Depends(get_db), current_user=Depends(get_current_user)):
-        return self._client_case(db).get_all()
+        return self._client_case(db, current_user=current_user).get_all()
 
     async def client_by_id(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).get_by_id(id)
