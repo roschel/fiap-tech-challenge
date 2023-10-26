@@ -34,7 +34,33 @@ class OrderCase(IOrderCase):
         self.current_user = current_user
 
     def get_all(self):
-        return self.repository.get_all()
+        results = self.repository.get_all()
+        saida = []
+
+        for order in results:
+            products_out = []
+
+            order_out = {
+                "order_id": order.id,
+                "client_id": order.client_id,
+                "discount": order.discount,
+                "total": order.total,
+                "status": order.status
+            }
+
+            for product in order.products:
+                products_out.append({
+                    "product_id": product.id,
+                    "price": product.price,
+                    "quantity": product.order_association[0].quantity,
+                    "obs": product.order_association[0].obs,
+                })
+
+            saida.append(
+                OrderOUT(**order_out, products=products_out)
+            )
+
+        return saida
 
     def get_by_id(self, id):
         result = self.repository.get_by_id(id)
@@ -42,7 +68,26 @@ class OrderCase(IOrderCase):
             msg = f"Pedido {id} não encontrado."
             logger.warning(msg)
             raise ObjectNotFound(msg, 404)
-        return result
+
+        products_out = []
+
+        order_out = {
+            "order_id": result.id,
+            "client_id": result.client_id,
+            "discount": result.discount,
+            "total": result.total,
+            "status": result.status
+        }
+
+        for product in result.products:
+            products_out.append({
+                "product_id": product.id,
+                "price": product.price,
+                "quantity": product.order_association[0].quantity,
+                "obs": product.order_association[0].obs,
+            })
+
+        return OrderOUT(**order_out, products=products_out)
 
     def get_by_client(self, client_id):
         orders = []
@@ -61,13 +106,15 @@ class OrderCase(IOrderCase):
                     category=CategoryOUT(**vars(produto.category))
                 )
                 produto = Product(
-                    product=produto,
-                    quantity=result.product_association[0].quantidade,
+                    product_id=result.product_association[0].product_id,
+                    quantity=result.product_association[0].quantity,
+                    price=produto.price,
                     obs=result.product_association[0].obs
                 )
                 produtos.append(produto)
 
             order = OrderOUT(
+                order_id=result.id,
                 client_id=result.client_id,
                 discount=result.discount,
                 total=result.total,
@@ -128,6 +175,7 @@ class OrderCase(IOrderCase):
         )
 
         return OrderOUT(
+            order_id=result.id,
             client_id=result.client_id,
             discount=result.discount,
             total=result.total,
@@ -142,12 +190,12 @@ class OrderCase(IOrderCase):
             ]
         )
 
-    @has_permission(permission=['client'])
+    @has_permission(permission=['admin'])
     def update(self, id, new_values: OrderUpdate) -> OrderOUT:
-        new_values.id = None
-        new_values.updated_by = self.current_client.id
+        # TODO - rever atualização de pedido
+        new_values.updated_by = self.current_user.id
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
 
     @has_permission(permission=['admin'])
     def delete(self, id):
-        return self.repository.delete(id, self.current_client)
+        return self.repository.delete(id, self.current_user)

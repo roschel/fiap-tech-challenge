@@ -20,7 +20,7 @@ class OrderBase(BaseModel):
 
 class Product(BaseModel):
     product_id: UUID = Field()
-    price: float = Field()
+    price: float | None = Field()
     quantity: int | None = Field()
     obs: str | None = Field(None)
 
@@ -31,8 +31,7 @@ class OrderIN(BaseModel):
     total: float = Field(gte=0)
 
 
-class OrderUpdate(OrderBase):
-    client: Client | None = Field(None)
+class OrderUpdate(BaseModel):
     products: List[Product] = Field()
     discount: float | None = Field(gte=0)
     total: float | None = Field(gte=0)
@@ -40,6 +39,7 @@ class OrderUpdate(OrderBase):
 
 
 class OrderOUT(OrderBase):
+    order_id: int = Field()
     client_id: UUID | None = Field(None)
     products: List[Product] | None = Field()
     discount: float | None = Field(gte=0)
