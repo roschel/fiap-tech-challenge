@@ -122,9 +122,24 @@ class OrderCase(IOrderCase):
 
         if new_status not in OrderCase.AVAILABLE_STATUS:
             raise InvalidStatus(status_code=400, msg=f"Status {status} não é valido.")
-        return self.repository.update_status(
+        result = self.repository.update_status(
             id,
             {"status": new_status, "updated_by": self.current_user.id}
+        )
+
+        return OrderOUT(
+            client_id=result.client_id,
+            discount=result.discount,
+            total=result.total,
+            status=result.status,
+            products=[
+                Product(
+                    product_id=product.id,
+                    price=product.price,
+                    quantity=product.order_association[0].quantity,
+                    obs=product.order_association[0].obs
+                ) for product in result.products
+            ]
         )
 
     @has_permission(permission=['client'])
