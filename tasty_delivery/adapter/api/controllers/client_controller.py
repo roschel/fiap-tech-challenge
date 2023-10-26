@@ -85,13 +85,13 @@ class ClientController:
         return self._client_case(db, current_user=current_user).get_all()
 
     async def client_by_id(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
-        return self._client_case(db).get_by_id(id)
+        return self._client_case(db, current_user=current_user).get_by_id(id)
 
     async def create(self, client: Client, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).create(client)
 
     async def update(self, id: UUID, client: ClientUpdate, db=Depends(get_db), current_user=Depends(get_current_user)):
-        return self._client_case(db).update(id, client)
+        return self._client_case(db, current_user=current_user).update(id, client)
 
     async def delete(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
-        self._client_case(db).delete(id)
+        self._client_case(db, current_user=current_user).delete(id)

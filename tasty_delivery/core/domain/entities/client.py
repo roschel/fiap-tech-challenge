@@ -13,6 +13,6 @@ class Client(Base):
 
 
 class ClientUpdate(BaseModel):
-    name: str = Field()
-    email: str = Field()
-    cpf: str = Field(max_length=11)
+    name: str | None = Field(None)
+    email: str | None = Field(None)
+    cpf: str | None = Field(None, max_length=11)

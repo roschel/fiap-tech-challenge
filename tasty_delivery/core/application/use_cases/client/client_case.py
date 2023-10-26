@@ -5,7 +5,7 @@ from sqlalchemy.exc import IntegrityError
 from adapter.database.models.client import Client as ClientDB
 from adapter.repositories.client_repository import ClientRepository
 from core.application.use_cases.client.iclient_case import IClientCase
-from core.domain.entities.client import Client
+from core.domain.entities.client import Client, ClientUpdate
 from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound
 from logger import logger
 from security.base import has_permission
@@ -46,13 +46,12 @@ class ClientCase(IClientCase):
             raise err
 
     @has_permission(permission=['admin'])
-    def update(self, id, new_values: Client) -> Client:
-        new_values.id = None
+    def update(self, id, new_values: ClientUpdate) -> Client:
         return self.repository.update(id, new_values.model_dump(exclude_none=True))
 
     @has_permission(permission=['admin'])
     def delete(self, id):
-        return self.repository.delete(id)
+        return self.repository.delete(id, self.current_user)
 
     @has_permission(permission=['admin', 'client'])
     def get_by_cpf(self, cpf):
