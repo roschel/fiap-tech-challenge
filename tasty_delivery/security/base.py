@@ -91,6 +91,9 @@ def has_permission(permission):
                 return func(*args, **kwargs)
 
             use_case = args[0]
+            if not use_case.current_user:
+                raise AuthenticationError(status_code=status.HTTP_403_FORBIDDEN, msg="Acesso negado")
+
             current_user = use_case.current_user
 
             if bool(set(permission) & set(current_user.scopes)):

@@ -19,7 +19,8 @@ class OrderBase(BaseModel):
 
 
 class Product(BaseModel):
-    product: ProductOUT = Field()
+    product_id: UUID = Field()
+    price: float = Field()
     quantity: int | None = Field()
     obs: str | None = Field(None)
 

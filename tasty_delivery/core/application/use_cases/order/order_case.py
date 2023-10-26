@@ -93,7 +93,7 @@ class OrderCase(IOrderCase):
             for product in order.products:
                 association = OrderProductAssociation(
                     order=orderdb,
-                    product=self.product_repository.get_by_id(product.product.id),
+                    product=self.product_repository.get_by_id(product.product_id),
                     quantity=product.quantity,
                     obs=product.obs
                 )

@@ -18,7 +18,8 @@ class ClientCase(IClientCase):
 
     @has_permission(permission=['admin'])
     def get_all(self):
-        return self.repository.get_all()
+        result = self.repository.get_all()
+        return result
 
     @has_permission(permission=['admin'])
     def get_by_id(self, id):

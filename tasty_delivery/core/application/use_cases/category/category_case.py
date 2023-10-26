@@ -18,9 +18,12 @@ class CategoryCase(ICategoryCase):
         self.repository = CategoryRepository(db)
         self.current_user = current_user
 
+    @has_permission(permission=['admin'])
     def get_all(self):
-        return self.repository.get_all()
+        result = self.repository.get_all()
+        return result
 
+    @has_permission(permission=['admin'])
     def get_by_id(self, id):
         result = self.repository.get_by_id(id)
         if not result:
