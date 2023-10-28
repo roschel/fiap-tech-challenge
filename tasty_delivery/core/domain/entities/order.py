@@ -38,9 +38,8 @@ class OrderUpdate(BaseModel):
     status: str | None = Field(None)
 
 
-class OrderOUT(OrderBase):
+class OrderOUT(BaseModel):
     order_id: int = Field()
-    client_id: UUID | None = Field(None)
     products: List[Product] | None = Field()
     discount: float | None = Field(gte=0)
     total: float | None = Field(gte=0)
