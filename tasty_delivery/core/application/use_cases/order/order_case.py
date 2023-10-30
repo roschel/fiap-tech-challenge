@@ -200,4 +200,4 @@ class OrderCase(IOrderCase):
 
     @has_permission(permission=['admin'])
     def delete(self, id):
-        return self.repository.delete(id, self.current_user)
+        self.repository.delete(id, self.current_user)
