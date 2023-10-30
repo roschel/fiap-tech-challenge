@@ -192,37 +192,11 @@ class OrderCase(IOrderCase):
 
     @has_permission(permission=['admin'])
     def update(self, id, new_values: OrderUpdate) -> OrderOUT:
-        order = self.repository.get_by_id(id)
-        if not order:
-            msg = f"Pedido {id} não encontrado."
-            logger.warning(msg)
-            raise ObjectNotFound(msg, 404)
-        
-        new_values_dict = new_values.model_dump(exclude_none=True)
-        self.repository.update(id, new_values_dict)
-
-        # return self.get_by_id(id)
-        
-        # self.repository.update(
-        #     id,
-        #     new_values.model_dump(exclude_none=True),
-        # )
-
-        return OrderOUT(
-            order_id=id,
-            # client_id=result.client_id,
-            discount=new_values.discount,
-            total=new_values.total,
-            status=new_values.status,
-            products=[
-                Product(
-                    product_id=product.product_id,
-                    price=product.price,
-                    quantity=product.quantity,
-                    obs=product.obs
-                ) for product in new_values.products
-            ]
-        )
+        order = self.repository.update(id, new_values.dict(exclude_unset=True))
+        if order:
+            return self.get_by_id(id)
+        else:
+            raise ObjectNotFound(f"Pedido {id} não encontrado.", 404)
 
     @has_permission(permission=['admin'])
     def delete(self, id):
