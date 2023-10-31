@@ -119,12 +119,12 @@ class OrderController:
             current_user = get_current_user(token.split(' ')[1])
         return self._order_case(db, current_user).create(order)
 
-    async def update(self, 
-                id: int, 
-                order_update: OrderUpdate, 
-                db=Depends(get_db),
-                current_user=Depends(get_current_user)):
-        return await self._order_case(db, current_user).update(id, order_update)
+    async def update(self,
+                     id: int,
+                     order_update: OrderUpdate,
+                     db=Depends(get_db),
+                     current_user=Depends(get_current_user)):
+        return await self._order_case(db, current_user=current_user).update(id, order_update)
 
     async def delete(self, id: int, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._order_case(db, current_user).delete(id)

@@ -146,9 +146,10 @@ class OrderCase(IOrderCase):
                 )
                 associations.append(association)
 
-            self.repository.create(associations)
+            result = self.repository.create(associations)
 
             return OrderOUT(
+                order_id=result[0].order_id,
                 client_id=orderdb.client_id,
                 discount=orderdb.discount,
                 total=orderdb.total,
@@ -192,7 +193,7 @@ class OrderCase(IOrderCase):
 
     @has_permission(permission=['admin'])
     def update(self, id, new_values: OrderUpdate) -> OrderOUT:
-        order = self.repository.update(id, new_values.dict(exclude_unset=True))
+        order = self.repository.update(id, new_values.model_dump(exclude_unset=True))
         if order:
             return self.get_by_id(id)
         else:
