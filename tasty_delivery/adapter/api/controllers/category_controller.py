@@ -72,7 +72,7 @@ class CategoryController:
         self._category_case = category_case
 
     async def categories(self, db=Depends(get_db), current_user=Depends(get_current_user)):
-        return self._category_case(db).get_all()
+        return self._category_case(db, current_user=current_user).get_all()
 
     async def category_by_id(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._category_case(db).get_by_id(id)

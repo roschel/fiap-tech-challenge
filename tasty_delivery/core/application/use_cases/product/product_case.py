@@ -36,8 +36,11 @@ class ProductCase(IProductCase):
     def create(self, obj: ProductIN) -> ProductOUT:
         try:
             id = uuid4()
-            obj.created_by = self.current_user.id
-            return self.repository.create(ProductDB(**vars(obj), id=id))
+            return self.repository.create(ProductDB(
+                **obj.model_dump(exclude_none=True),
+                id=id,
+                created_by=self.current_user.id)
+            )
         except IntegrityError:
             msg = "Produto já existente na base de dados"
             logger.warning(msg)
@@ -45,9 +48,9 @@ class ProductCase(IProductCase):
 
     @has_permission(permission=['admin'])
     def update(self, id, new_values: ProductUpdateIN) -> ProductOUT:
-        new_values.id = None
-        new_values.updated_by = self.current_user.id
-        return self.repository.update(id, new_values.model_dump(exclude_none=True))
+        new_values = new_values.model_dump(exclude_none=True)
+        new_values['updated_by'] = self.current_user.id
+        return self.repository.update(id, new_values)
 
     @has_permission(permission=['admin'])
     def delete(self, id):

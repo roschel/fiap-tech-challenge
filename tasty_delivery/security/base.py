@@ -97,7 +97,11 @@ def has_permission(permission):
             current_user = use_case.current_user
 
             if bool(set(permission) & set(current_user.scopes)):
-                return func(*args, **kwargs)
+                try:
+                    return func(*args, **kwargs)
+                except Exception as err:
+                    logger.warning(str(err))
+                    raise err
             else:
                 raise AuthenticationError(status_code=status.HTTP_403_FORBIDDEN, msg="Acesso negado")
 
