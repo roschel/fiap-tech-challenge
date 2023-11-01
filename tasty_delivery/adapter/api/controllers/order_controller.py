@@ -123,11 +123,7 @@ class OrderController:
 
     async def create(self, order: OrderIN, request: Request, db=Depends(get_db)):
         """
-<<<<<<< Updated upstream
-        Criando pedido
-=======
         Cria um pedido
->>>>>>> Stashed changes
         """
         current_user = None
         token = request.headers.get('Authorization')
