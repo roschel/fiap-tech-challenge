@@ -9,7 +9,7 @@ camada de atendimento presencial.
 
 ### :: Acessando a documentação
 
-- Disponível em `localhost:8000/docs`
+- Disponível em `localhost:8000/docs` e/ou `localhost:8000/redoc`
 
 ### Postman
 

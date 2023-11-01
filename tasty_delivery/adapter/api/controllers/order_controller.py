@@ -104,17 +104,30 @@ class OrderController:
         self._order_case = order_case
 
     async def orders(self, db=Depends(get_db)):
+        """
+        Lista todos os pedidos
+        """
         return self._order_case(db).get_all()
 
     async def order_by_id(self, id: int, db=Depends(get_db)):
+        """
+        Lista pedidos por {id}
+        """
         return self._order_case(db).get_by_id(id)
 
     async def order_by_client(self, client_id: UUID, db=Depends(get_db)):
+        """
+        Lista pedidos por {client_id}
+        """
         return self._order_case(db).get_by_client(client_id)
 
     async def create(self, order: OrderIN, request: Request, db=Depends(get_db)):
         """
+<<<<<<< Updated upstream
         Criando pedido
+=======
+        Cria um pedido
+>>>>>>> Stashed changes
         """
         current_user = None
         token = request.headers.get('Authorization')
@@ -127,9 +140,17 @@ class OrderController:
                      order_update: OrderUpdate,
                      db=Depends(get_db),
                      current_user=Depends(get_current_user)):
+        """
+        Atualiza um pedido
+        * Necessário permissionamento de usuário
+        """
         return await self._order_case(db, current_user=current_user).update(id, order_update)
 
     async def delete(self, id: int, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Deleta um pedido
+        * Necessário permissionamento de usuário
+        """
         return self._order_case(db, current_user).delete(id)
 
     async def update_status(self,
@@ -137,4 +158,8 @@ class OrderController:
                             status: str,
                             db=Depends(get_db),
                             current_user=Depends(get_current_user)):
+        """
+        Atualiza status de um pedido
+        * Necessário permissionamento de usuário
+        """
         return self._order_case(db=db, current_user=current_user).update_status(id, status)
