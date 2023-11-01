@@ -113,6 +113,9 @@ class OrderController:
         return self._order_case(db).get_by_client(client_id)
 
     async def create(self, order: OrderIN, request: Request, db=Depends(get_db)):
+        """
+        Criando pedido
+        """
         current_user = None
         token = request.headers.get('Authorization')
         if token:
