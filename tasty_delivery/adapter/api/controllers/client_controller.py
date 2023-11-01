@@ -39,6 +39,19 @@ class ClientController:
             response_model_exclude_none=True
         )
         self.router.add_api_route(
+            path="/cpf/{cpf}",
+            endpoint=self.client_by_cpf,
+            methods=["GET"],
+            response_model=Client,
+            responses={
+                200: {"model": Client},
+                404: {"model": ObjectNotFound},
+                409: {"model": ObjectDuplicated}
+            },
+            status_code=200,
+            response_model_exclude_none=True
+        )
+        self.router.add_api_route(
             path="/",
             endpoint=self.create,
             methods=["POST"],
@@ -82,10 +95,16 @@ class ClientController:
         self._client_case = client_case
 
     async def clients(self, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """Busca clientes"""
         return self._client_case(db, current_user=current_user).get_all()
 
     async def client_by_id(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """Busca cliente por id"""
         return self._client_case(db, current_user=current_user).get_by_id(id)
+
+    async def client_by_cpf(self, cpf: str, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """Busca cliente por cpf"""
+        return self._client_case(db, current_user=current_user).get_by_cpf(cpf)
 
     async def create(self, client: Client, db=Depends(get_db), current_user=Depends(get_current_user)):
         return self._client_case(db).create(client)
