@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sistema-tasty
+  labels:
+    app: sistema-tasty
+spec:
+  containers:
+    - name: tasty-sistema
+      image: llaugustoll/tasty_delivery:v5
+      ports:
+        - containerPort: 8000
+
+        

@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # POSTGRES
     DB_USERNAME: str = Field("postgres")
     DB_PASSWORD: str = Field("password")
-    DB_HOST: str = Field("localhost")
+    DB_HOST: str = Field("svc-tasty-db:5432")
     DB_DATABASE: str = Field("tasty_delivery")
 
     # TOKEN

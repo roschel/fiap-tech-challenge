@@ -1,9 +1,10 @@
 version: "3"
 services:
   tasty_delivery:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: llaugustoll/tasty_delivery:v5
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     container_name: tasty_delivery
     ports:
       - "8000:8000"

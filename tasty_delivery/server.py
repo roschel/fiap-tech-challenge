@@ -60,6 +60,6 @@ app.include_router(auth_user_controller.router)
 app.include_router(order_controller.router)
 
 
-@app.on_event("startup")
-async def populate_database():
-    populate()
+# @app.on_event("startup")
+# async def populate_database():
+#     populate()

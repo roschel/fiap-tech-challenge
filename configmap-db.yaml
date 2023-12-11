@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-configmap
+data:  
+  POSTGRES_PASSWORD: password
+  POSTGRES_USER: postgres
+  POSTGRES_DB: tasty_delivery
