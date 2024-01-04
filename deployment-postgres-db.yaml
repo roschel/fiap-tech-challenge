@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-postgres-db
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: db-tasty
+      labels:
+        app: db-tasty
+    spec:
+      containers:
+        - name: tasty-postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: db-configmap
+  selector:
+    matchLabels:
+      app: db-tasty
