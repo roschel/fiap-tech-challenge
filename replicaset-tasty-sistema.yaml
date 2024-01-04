@@ -10,13 +10,13 @@ spec:
         app: sistema-tasty
     spec:
         containers:
-        - name: tasty-sistema
+        - name: sistema-tasty
           image: llaugustoll/tasty_delivery:v6
           ports:
             - containerPort: 8000
           envFrom:
             - configMapRef:
-              name: configmap-tasty-sistema  
+                name: configmap-tasty-sistema  
   replicas: 2
   selector:
     matchLabels:
