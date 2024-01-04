@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-sistema-tasty
+spec:
+  replicas: 2
+  template:
+    metadata:
+      name: sistema-tasty
+      labels:
+        app: sistema-tasty
+    spec:
+        containers:
+        - name: sistema-tasty
+          image: llaugustoll/tasty_delivery:v6
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: configmap-tasty-sistema  
+  selector:
+    matchLabels:
+      app: sistema-tasty
