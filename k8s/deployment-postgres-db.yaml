@@ -1,3 +1,5 @@
+# Não é o jeito correto de subir um branco. 
+# Corre é utilizar statefulset
 apiVersion: apps/v1
 kind: Deployment
 metadata:

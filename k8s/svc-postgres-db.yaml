@@ -8,3 +8,4 @@ spec:
     app: db-tasty
   ports:
     - port: 5432
+      name: postgres
