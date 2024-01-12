@@ -69,12 +69,12 @@ Neste momento a aplicação deverá estar com 3 pods em execução.
 para verificar o funcionamento do projeto é preciso acessar o ip do servidor do minikube.
     para verificar o ip(INTERNAL-IP) comando -> "kubectl get nodes -o wide"
 
-    ![Alt text](image-5.png)
+    ![Alt text](utils/image-5.png)
 
 Será necessário utilizar a porta configurada para acessar o servidor, no caso deste projeto foi configurado um nodePort : 30001
 
 "INTERNAL-IP":30001/docs
 
-![Alt text](image-6.png)
+![Alt text](utils/image-6.png)
 
 
