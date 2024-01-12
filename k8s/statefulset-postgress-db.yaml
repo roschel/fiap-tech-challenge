@@ -6,11 +6,12 @@ spec:
   selector:
     matchLabels:
       app: db-tasty # has to match .spec.template.metadata.labels
-  serviceName: "db-tasty"
+  serviceName: svc-tasty-service
   replicas: 1 # by default is 1
   minReadySeconds: 10 # by default is 0
   template:
     metadata:
+      name: db-tasty
       labels:
         app: db-tasty # has to match .spec.selector.matchLabels
     spec:
@@ -26,7 +27,8 @@ spec:
              name: db-configmap
         volumeMounts:
         - name: postgres-persist
-          mountPath: /var/lib/postgresql
+          mountPath: /var/lib/postgresql/data 
+          # para configurar acesso para montar o volume do path a cima é preciso adicionar uma variavel no docker conforme orientação da documentação
       volumes:
         - name: postgres-persist
           persistentVolumeClaim: 
