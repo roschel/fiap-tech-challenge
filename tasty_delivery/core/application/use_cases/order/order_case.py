@@ -13,7 +13,7 @@ from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound, In
 from core.domain.value_objects.order_status import OrderStatus
 from logger import logger
 from security.base import has_permission
-from adapter.webhook import send_webhook
+from adapter.webhook.webhook import send_webhook
 
 
 class OrderCase(IOrderCase):
