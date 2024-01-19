@@ -13,6 +13,7 @@ from core.domain.exceptions.exception import DuplicateObject, ObjectNotFound, In
 from core.domain.value_objects.order_status import OrderStatus
 from logger import logger
 from security.base import has_permission
+from adapter.webhook import send_webhook
 
 
 class OrderCase(IOrderCase):
@@ -148,6 +149,14 @@ class OrderCase(IOrderCase):
 
             result = self.repository.create(associations)
 
+            webhook_msg = (f"Pedido {result[0].order_id} criado com sucesso - "
+                           f"Status {orderdb.status}")
+
+            if client_id:
+                webhook_msg += f" - Cliente {self.current_client.name}"
+
+            send_webhook(webhook_msg)
+
             return OrderOUT(
                 order_id=result[0].order_id,
                 client_id=orderdb.client_id,
@@ -174,6 +183,10 @@ class OrderCase(IOrderCase):
             id,
             {"status": new_status, "updated_by": self.current_user.id}
         )
+
+        webhook_msg = f"Pedido {result.id} atualizado - Status {result.status}"
+
+        send_webhook(webhook_msg)
 
         return OrderOUT(
             order_id=result.id,
