@@ -26,11 +26,17 @@ class AuthClientController:
         )
 
     async def login(self, cpf: Annotated[str, Form()]):
+        """
+        Retorna token de acesso validando cadastro de cliente
+        """
         return authenticate_client(cpf)
 
     async def signup(self,
                      cpf: Annotated[str, Form()],
                      nome: Annotated[str, Form()],
                      email: Annotated[str, Form()]):
+        """
+        Cadastra cliente e retorna token de acesso
+        """
         auth = Auth(cpf=cpf, name=nome, email=email)
         return signup_client(auth)

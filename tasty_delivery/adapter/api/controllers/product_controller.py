@@ -79,20 +79,41 @@ class ProductController:
         self._product_case = product_case
 
     async def products(self, db=Depends(get_db)):
+        """
+        Retorna todos os produtos cadastrados
+        """
         return self._product_case(db).get_all()
 
     async def product_by_id(self, id: UUID, db=Depends(get_db)):
+        """
+        Retorna produto por id
+        """
         return self._product_case(db).get_by_id(id)
 
     async def products_by_category(self, category_id: UUID, db=Depends(get_db)):
+        """
+        Retorna produtos por categoria
+        """
         return self._product_case(db).get_by_category(category_id)
 
     async def create(self, product: ProductIN, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Cadastra produto
+        * Necessário permissionamento de usuário admin
+        """
         return self._product_case(db, current_user).create(product)
 
     async def update(self, id: UUID, product: ProductUpdateIN, db=Depends(get_db),
                      current_user=Depends(get_current_user)):
+        """
+        Atualiza produto
+        * Necessário permissionamento de usuário admin
+        """
         return self._product_case(db, current_user).update(id, product)
 
     async def delete(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Deleta produto
+        * Necessário permissionamento de usuário admin
+        """
         return self._product_case(db, current_user).delete(id)

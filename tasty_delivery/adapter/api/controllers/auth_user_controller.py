@@ -27,6 +27,9 @@ class AuthController:
         )
 
     async def login(self, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
+        """
+        Retorna token de acesso validando cadastro de usuário
+        """
         return authenticate_user(form_data)
 
     async def signup(
@@ -37,5 +40,9 @@ class AuthController:
             password: Annotated[str, Form()],
             current_user=Depends(get_current_user)
     ):
+        """
+        Cadastra usuário e retorna token de acesso
+        * Necessário ter permissionamento de usuário admin
+        """
         auth = Auth(cpf=cpf, name=nome, email=email, admin=True, password=password)
         return handle_user_signup(auth, current_user)

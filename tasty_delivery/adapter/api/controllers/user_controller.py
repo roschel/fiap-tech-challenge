@@ -82,16 +82,36 @@ class UserController:
         self._user_case = user_case
 
     async def users(self, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Lista todos os usuários
+        * Necessário ter permissionamento de usuário admin
+        """
         return self._user_case(db).get_all()
 
     async def user_by_id(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Lista todos os usuários por {id}
+        * Necessário ter permissionamento de usuário admin
+        """
         return self._user_case(db).get_by_id(id)
 
     async def create(self, user: User, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Cria usuário
+        * Necessário ter permissionamento de usuário admin
+        """
         return self._user_case(db, current_user).create(user)
 
     async def update(self, id: UUID, user: UserUpdate, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Cria usuário
+        * Necessário ter permissionamento de usuário admin
+        """
         return self._user_case(db, current_user).update(id, user)
 
     async def delete(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Deleta usuário
+        * Necessário ter permissionamento de usuário admin
+        """
         self._user_case(db, current_user).delete(id)

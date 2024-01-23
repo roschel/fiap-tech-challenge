@@ -52,20 +52,6 @@ class ClientController:
             response_model_exclude_none=True
         )
         self.router.add_api_route(
-            path="/",
-            endpoint=self.create,
-            methods=["POST"],
-            response_model=Client,
-            response_model_by_alias=True,
-            responses={
-                201: {"model": Client},
-                409: {"model": ObjectDuplicated}
-            },
-            status_code=201,
-            response_model_exclude_none=True,
-            include_in_schema=False
-        )
-        self.router.add_api_route(
             path="/{id}",
             endpoint=self.update,
             methods=["PUT"],
@@ -95,22 +81,36 @@ class ClientController:
         self._client_case = client_case
 
     async def clients(self, db=Depends(get_db), current_user=Depends(get_current_user)):
-        """Busca clientes"""
+        """
+        Lista todos os clientes
+        * Necessário permissionamento de usuário
+        """
         return self._client_case(db, current_user=current_user).get_all()
 
-    async def client_by_id(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
-        """Busca cliente por id"""
-        return self._client_case(db, current_user=current_user).get_by_id(id)
-
     async def client_by_cpf(self, cpf: str, db=Depends(get_db), current_user=Depends(get_current_user)):
-        """Busca cliente por cpf"""
+        """
+        Lista clientes por CPF
+        * Necessário permissionamento de usuário
+        """
         return self._client_case(db, current_user=current_user).get_by_cpf(cpf)
 
-    async def create(self, client: Client, db=Depends(get_db), current_user=Depends(get_current_user)):
-        return self._client_case(db).create(client)
+    async def client_by_id(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Lista cliente por {id}
+        * Necessario permissionamento de usuário
+        """
+        return self._client_case(db, current_user=current_user).get_by_id(id)
 
     async def update(self, id: UUID, client: ClientUpdate, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Atualiza cliente
+        * Necessario permissionamento de usuário
+        """
         return self._client_case(db, current_user=current_user).update(id, client)
 
     async def delete(self, id: UUID, db=Depends(get_db), current_user=Depends(get_current_user)):
+        """
+        Deleta cliente
+        * Necessario permissionamento de usuário
+        """
         self._client_case(db, current_user=current_user).delete(id)
