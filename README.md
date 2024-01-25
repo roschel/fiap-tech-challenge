@@ -82,3 +82,8 @@ Será necessário utilizar a porta configurada para acessar o servidor, no caso 
 ![Alt text](utils/image-6.png)
 
 
+### Desenho arquitetura infra
+
+![Infra](utils/Infra.jpeg)
+
+
